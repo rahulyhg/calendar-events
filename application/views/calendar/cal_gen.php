@@ -1,4 +1,5 @@
 <?php
+	defined('BASEPATH') OR exit('No direct script access allowed');
 	$cells = array	(array('','','','','','',''));
 	for ($count = 1,$i = $start; $count <= $days; $i++, $count++) {
 		if ($i > 35) {

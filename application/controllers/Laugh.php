@@ -6,7 +6,7 @@ class Laugh extends CI_Controller {
 	{
 		echo "hehe";
 	}
-    public function hello ($params = array ()) {
-        print_r ($params);
+    public function phpinfo () {
+        phpinfo();
     }
 }
