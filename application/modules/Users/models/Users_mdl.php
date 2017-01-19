@@ -65,7 +65,7 @@ class Login_mdl extends Base_Model
         
         // set the values of member variables.
         $this->_loginby = $this->input->post('loginby');
-        $this->_hashpass = hash('sha512', config_item('encrypt_key8') . $this->input->post('password') . config_item('encrypt_key16') . 'ce-ncit' . config_item('encrypt_key32'));
+        $this->_hashpass = hashit($this->input->post('password'));
     }
 
     public function isgood()
@@ -73,9 +73,10 @@ class Login_mdl extends Base_Model
         // check if email or username is entered.
         // assuming '@' is only possible in email and not username
         if (strpos($this->_loginby, '@') === TRUE) {
-            return $this->_action->_login_by_email();
+            return $this->_login_by_email();
         } else {
-            return $this->action->_login_by_username();
+            echo 'login by username';
+            return $this->_login_by_username();
         }
     }
     
@@ -84,10 +85,19 @@ class Login_mdl extends Base_Model
     private function _login_by_email()
     {
         // if email was entered
-        $userdata = $this->get_by(array(
+        $login_data = array(
             'email' => $this->_loginby,
-            'hashpass' => $this->_hash_pass
-        ));
+            'hashpass' => $this->_hashpass
+        );
+        var_dump($login_data);
+        $userdata = $this->get_by($login_data);
+        
+        if (count($userdata)) {
+            //correct email password combination
+            echo 'login';
+            return TRUE;
+        }
+        return FALSE;
     }
     
     // login by username if it was provided.
@@ -95,10 +105,19 @@ class Login_mdl extends Base_Model
     private function _login_by_username()
     {
         // if username was entered
-        $userdata = $this->get_by(array(
+        $login_data = array(
             'username' => $this->_loginby,
-            'hashpass' => $this->_hash_pass
-        ));
+            'hashpass' => $this->_hashpass
+        );
+        var_dump ($login_data);
+        $userdata = $this->get_by($login_data);
+        
+        if (count($userdata)) {
+            //correct username password combination
+            echo 'login correct';
+            return TRUE;
+        }
+        return FALSE;
     }
 }
 
@@ -129,7 +148,7 @@ class Signup_mdl extends Base_Model
         
         // set the values of member variables.
         $this->_username = $this->input->post('username');
-        $this->_hashpass = hash('sha512', config_item('encrypt_key8') . $this->input->post('password') . config_item('encrypt_key16') . 'ce-ncit' . config_item('encrypt_key32'));
+        $this->_hashpass = hashit($this->input->post('password'));
         $this->_email = $this->input->post('email');
     }
     
@@ -138,7 +157,7 @@ class Signup_mdl extends Base_Model
     {
         //config the required params. 
         $cur_datetime = date('Y-m-d H:i:s');
-        $ver_key = hash('sha512', $this->input->post('username'). config_item('encrypt_key8') . $this->input->post('password') . config_item('encrypt_key16') . 'ce-ncit' . config_item('encrypt_key32') . $cur_datetime);
+        $ver_key = hashit($this->input->post('username'). $this->input->post('password') . $cur_datetime);
         $id = $this->save(array(
             'username' => $this->_username,
             'hashpass' => $this->_hashpass,
@@ -221,5 +240,10 @@ class Verify_mdl extends Base_Model
             echo 'key not matched';
         }
     }
+}
+
+//the hasing function
+function hashit($string){
+    return hash('sha512', config_item('encrypt_key8') . $string . config_item('encrypt_key16') . 'ce-ncit' . config_item('encrypt_key32'));
 }
 
