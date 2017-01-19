@@ -1,6 +1,7 @@
 <?php
+defined('BASEPATH') or exit('No direct script access allowed');
 
-class Ce_Controller extends CI_Controller
+class Ce_Controller extends MX_Controller
 {
 
     function __construct()
@@ -8,11 +9,9 @@ class Ce_Controller extends CI_Controller
         parent::__construct();
         // load required helper and library for the site
         $this->load->helper(array(
-            'form',
-            'url',
             'html'
         ));
-        $this->load->library('form_validation');
+        //echo 'CE_controller___construct';
     }
 }
 

@@ -2,15 +2,14 @@
 defined('BASEPATH') or exit('No direct script access allowed');
 
 $config = array(
-    'login/index' => array(
+    'users/login' => array(
         array(
             'field' => 'loginby',
             'label' => 'Loginby',
-            'rules' => 'trim|required|alpha_dash|min_length[6]|max_length[128]|xss_clean',
+            'rules' => 'trim|required|alpha_dash|min_length[6]|max_length[128]',
             'errors' => array(
                 'required' => 'Wrong Username or Password',
                 'alpha_dash' => 'Wrong Username or Password',
-                'xss_clean' => 'Wrong Username or Password',
                 'min_length' => 'Wrong Username or Password',
                 'max_length' => 'Wrong Username or Password'
             )
@@ -24,11 +23,16 @@ $config = array(
             )
         )
     ),
-    'signup/index' => array(
+    'users/signup' => array(
         array(
             'field' => 'username',
             'label' => 'Username',
-            'rules' => 'required|alpha_dash|min_length[6]|max_length[128]|xss_clean'
+            'rules' => 'required|alpha_dash|min_length[6]|max_length[128]'
+        ),
+        array(
+            'field' => 'email',
+            'label' => 'Email',
+            'rules' => 'required|valid_email'
         ),
         array(
             'field' => 'password',
