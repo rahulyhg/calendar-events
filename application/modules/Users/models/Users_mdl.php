@@ -24,10 +24,10 @@ class Users_mdl extends MX_Model
     {
         $this->_action = new signup_mdl();
         $check = $this->_action->is_taken();
-        if ($check['answer'] == FALSE) {
+        if ($check === '') {
             $this->_action->insert_to_verify(); // set values
         }
-        return $check['taken'];
+        return $check;
     }
 }
 
