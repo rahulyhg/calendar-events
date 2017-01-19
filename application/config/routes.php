@@ -55,4 +55,5 @@ $route['translate_uri_dashes'] = FALSE;
 $route['login'] = 'users/login';
 $route['signup'] = 'users/signup';
 $route['home'] = 'users/home';
+$route['verify'] = 'users/verify';
 $route['forgotpassword'] = 'users/forgot';

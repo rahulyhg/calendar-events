@@ -62,19 +62,22 @@ class Users extends Form_Controller
             $this->signupform($this->input->post('username', 'TRUE'), $this->input->post('email', 'TRUE'), validation_errors());
         } else {
             //valid form
-            if ($this->user_model->isavailable() == FALSE) {
+            $check = $this->users_mdl->signup();
+            if ($check != '') {
                 // username/email already registered.
-                $this->loginform($this->input->post('loginby', 'TRUE'), 'Wrong Username or Password');
+                $this->loginform($this->input->post('loginby', 'TRUE'), $check . ' already taken');
             } else {
-                // login successful
+                // signup successful
                 redirect(base_url('home'), 'refresh');
             }
         }
     }
 
-    function verify($verificationText = NULL)
+    function verify($id = '', $verificationText = '')
     {
-        $noRecords = $this->HomeModel->verifyEmailAddress($verificationText);
+        if ($id == '' || $verificationText == '') echo 'no params';
+        $this->users_mdl->verify($id, $verificationText);
+        /* $noRecords = $this->HomeModel->verifyEmailAddress($verificationText);
         if ($noRecords > 0) {
             $error = array(
                 'success' => "Email Verified Successfully!"
@@ -85,13 +88,7 @@ class Users extends Form_Controller
             );
         }
         $data['errormsg'] = $error;
-        $this->load->view('index.php', $data);
-    }
-
-    function sendVerificationEmail()
-    {
-        $this->EmailModel->sendVerificatinEmail("yashwantchavan@technicalkeeda.com", "13nRGi7UDv4CkE7JHP1o");
-        $this->load->view('index.php', $data);
+        $this->load->view('index.php', $data); */
     }
 
     public function forgot()
