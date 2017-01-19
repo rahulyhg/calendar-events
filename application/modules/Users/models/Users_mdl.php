@@ -25,7 +25,8 @@ class Users_mdl extends CI_Model
         $this->_action = new Signup_mdl();
         $check = $this->_action->istaken();
         if ($check == '') {
-            $this->_action->insert_to_verify(); // set values
+            $result = $this->_action->insert_to_verifypending();
+            echo 'id = ' . $result['id']. '<br />verification key = ' . $result['ver_key'];
         }
         return $check;
     }
@@ -133,22 +134,20 @@ class Signup_mdl extends Base_Model
     }
     
     // insert the registration data into verifypending table
-    public function insert_to_verify()
+    public function insert_to_verifypending()
     {
-        // if username was entered
-        $this->save(array(
+        //config the required params. 
+        $cur_datetime = date('Y-m-d H:i:s');
+        $ver_key = hash('sha512', $this->input->post('username'). config_item('encrypt_key8') . $this->input->post('password') . config_item('encrypt_key16') . 'ce-ncit' . config_item('encrypt_key32') . $cur_datetime);
+        $id = $this->save(array(
             'username' => $this->_username,
             'hashpass' => $this->_hashpass,
             'email' => $this->_email,
-            'register_date' => date('Y-m-d H:i:s'),
-            'verifying_key' => hash('sha512', $this->input->post('username'). config_item('encrypt_key8') . $this->input->post('password') . config_item('encrypt_key16') . 'ce-ncit' . config_item('encrypt_key32'))
+            'register_date' => $cur_datetime,
+            'verifying_key' => $ver_key
         ));
-    }
-
-    public function _setup_login()
-    {
-        $this->_loginby = array();
-        $this->_hash_pass = hash('sha512', config_item('encrypt_key8') . $this->input->post('password') . config_item('encrypt_key16') . 'ce-ncit' . config_item('encrypt_key32'));
+        
+        return array('id' => $id, 'ver_key' => $ver_key);
     }
     
     // checks if username/email is already registered.
@@ -182,22 +181,43 @@ class Verify_mdl extends Base_Model
 
     protected $_rules = array();
 
-    private $_verifying_key;
+    private $_verifying_row;
 
     public function __construct($id = null)
     {
         parent::__construct();
         $this->_table_name = 'verifypending';
         // set the values of member variables.
-        $this->_verifying_key = $this->get($id, TRUE)->verifying_key;
-        echo $this->_verifying_key;
+        $this->_verifying_row = $this->get($id, TRUE);
     }
     
     public function verify_with($verifying_key) {
-        if ($this->_verifying_key == $verifying_key) {
-            echo 'verify';
+        
+        if ($this->_verifying_row->verifying_key == $verifying_key) {
+            //ready to verify
+            
+            //first add to members
+            $this->_table_name = 'members'; //setup tablename
+            
+            $id = $this->save(array(
+            'username' => $this->_verifying_row->username,
+            'hashpass' => $this->_verifying_row->hashpass,
+            'email' => $this->_verifying_row->email,
+            'register_date' => $this->_verifying_row->register_date,
+            'is_active' => TRUE
+            ));
+            
+            
+            //then delete from verifypending
+            $this->_table_name = 'verifypending'; //setup tablename
+            echo $this->_verifying_row->id;
+            $this->delete($this->_verifying_row->id);
+            
+            
+            echo 'successfully added with id = ' . $id;
         }
         else {
+            //key not matched
             echo 'key not matched';
         }
     }
