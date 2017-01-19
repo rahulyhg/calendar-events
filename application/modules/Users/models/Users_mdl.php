@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class Users_mdl extends MX_Model
+class Users_mdl extends CI_Model
 {
 
     private $_action;
@@ -23,8 +23,8 @@ class Users_mdl extends MX_Model
     public function signup()
     {
         $this->_action = new signup_mdl();
-        $check = $this->_action->is_taken();
-        if ($check === '') {
+        $check = $this->_action->istaken();
+        if ($check == '') {
             $this->_action->insert_to_verify(); // set values
         }
         return $check;
@@ -45,11 +45,9 @@ class Login_mdl extends Base_Model
 
     protected $_rules = array();
 
-    protected $_timestamps = TRUE;
-
     private $_loginby;
 
-    private $_hash_pass;
+    private $_hashpass;
 
     private $_errors;
 
@@ -59,7 +57,7 @@ class Login_mdl extends Base_Model
         
         // set the values of member variables.
         $this->_loginby = $this->input->post('loginby');
-        $this->_hash_pass = hash('sha512', config_item('encrypt_key8') . $this->input->post('password') . config_item('encrypt_key16') . 'ce-ncit' . config_item('encrypt_key32'));
+        $this->_hashpass = hash('sha512', config_item('encrypt_key8') . $this->input->post('password') . config_item('encrypt_key16') . 'ce-ncit' . config_item('encrypt_key32'));
     }
 
     public function isgood()
@@ -109,8 +107,6 @@ class Signup_mdl extends Base_Model
     protected $_order_by = 'id';
 
     protected $_rules = array();
-
-    protected $_timestamps = TRUE;
     
     // data for rows
     private $_username;
@@ -119,15 +115,26 @@ class Signup_mdl extends Base_Model
 
     private $_hashpass;
 
-    private $_errors;
+    public function __construct()
+    {
+        parent::__construct();
+        
+        // set the values of member variables.
+        $this->_username = $this->input->post('username');
+        $this->_hashpass = hash('sha512', config_item('encrypt_key8') . $this->input->post('password') . config_item('encrypt_key16') . 'ce-ncit' . config_item('encrypt_key32'));
+        $this->_email = $this->input->post('email');
+    }
     
     // insert the registration data into verifypending table
     public function insert_to_verify()
     {
         // if username was entered
-        $userdata = $this->get_by(array(
-            'username' => $this->_loginby,
-            'hashpass' => $this->_hash_pass
+        $this->save(array(
+            'username' => $this->_username,
+            'hashpass' => $this->_hashpass,
+            'email' => $this->_email,
+            'register_date' => date('Y-m-d H:i:s'),
+            'verifying_key' => 'The optional timestamp parameter in the date() function specifies a timestamp. If you do not specify a timestamp, the current da'
         ));
     }
 
@@ -141,7 +148,7 @@ class Signup_mdl extends Base_Model
     // @return array['answer', arrayOfTakenVals]
     public function istaken()
     {
-        /* 
+        /*
          * //output will be used as "@return already taken" if not null
          * Used as follows:
          * return 'Username and email';
