@@ -15,7 +15,7 @@ $config = array(
             )
         ),
         array(
-            'field' => 'pass',
+            'field' => 'password',
             'label' => 'Password',
             'rules' => 'trim|required',
             'errors' => array(

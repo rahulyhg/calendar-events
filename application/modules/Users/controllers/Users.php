@@ -32,12 +32,12 @@ class Users extends Form_Controller
         } else {
             // valid form
             
-            if ($this->user_model->login() == FALSE) {
+            if ($this->users_mdl->login() == FALSE) {
                 // incorrect credentials
                 $this->loginform($this->input->post('loginby', 'TRUE'), 'Wrong Username or Password');
             } else {
                 // login successful
-                redirect(base_url('home'), 'refresh');
+                //redirect(base_url('home'), 'refresh');
             }
         }
     }
@@ -68,7 +68,8 @@ class Users extends Form_Controller
                 $this->loginform($this->input->post('loginby', 'TRUE'), $check . ' already taken');
             } else {
                 // signup successful
-                redirect(base_url('home'), 'refresh');
+                //redirect(base_url('home'), 'refresh');
+                echo 'signup success';
             }
         }
     }
