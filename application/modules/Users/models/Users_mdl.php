@@ -26,7 +26,10 @@ class Users_mdl extends CI_Model
         $check = $this->_action->istaken();
         if ($check == '') {
             $result = $this->_action->insert_to_verifypending();
-            echo 'id = ' . $result['id']. '<br />verification key = ' . $result['ver_key'];
+            
+            // @todo send this ver_uri via email to $result['email']
+            $ver_uri = base_url('users/verify/' . $result['id'] . '/' . $result['ver_key']);
+            echo anchor($ver_uri, 'verify!');
         }
         return $check;
     }
@@ -34,7 +37,6 @@ class Users_mdl extends CI_Model
     public function verify($id, $verifying_key)
     {
         $this->_action = new Verify_mdl($id);
-        echo 'verifing';
         $id = $this->_action->verify_with($verifying_key);
     }
 }
@@ -93,8 +95,8 @@ class Login_mdl extends Base_Model
         $userdata = $this->get_by($login_data);
         
         if (count($userdata)) {
-            //correct email password combination
-            echo 'login';
+            // correct email password combination
+            // echo 'email and password correct';
             return TRUE;
         }
         return FALSE;
@@ -109,12 +111,12 @@ class Login_mdl extends Base_Model
             'username' => $this->_loginby,
             'hashpass' => $this->_hashpass
         );
-        var_dump ($login_data);
+        // var_dump ($login_data);
         $userdata = $this->get_by($login_data);
         
         if (count($userdata)) {
-            //correct username password combination
-            echo 'login correct';
+            // correct username password combination
+            // echo 'login correct';
             return TRUE;
         }
         return FALSE;
@@ -155,9 +157,9 @@ class Signup_mdl extends Base_Model
     // insert the registration data into verifypending table
     public function insert_to_verifypending()
     {
-        //config the required params. 
+        // config the required params.
         $cur_datetime = date('Y-m-d H:i:s');
-        $ver_key = hashit($this->input->post('username'). $this->input->post('password') . $cur_datetime);
+        $ver_key = hashit($this->input->post('username') . $this->input->post('password') . $cur_datetime);
         $id = $this->save(array(
             'username' => $this->_username,
             'hashpass' => $this->_hashpass,
@@ -166,13 +168,18 @@ class Signup_mdl extends Base_Model
             'verifying_key' => $ver_key
         ));
         
-        return array('id' => $id, 'ver_key' => $ver_key);
+        return array(
+            'id' => $id,
+            'ver_key' => $ver_key,
+            'email' => $this->_email
+        );
     }
     
     // checks if username/email is already registered.
     // @return array['answer', arrayOfTakenVals]
     public function istaken()
     {
+        // @todo code to check if the username and email is available
         /*
          * //output will be used as "@return already taken" if not null
          * Used as follows:
@@ -209,41 +216,39 @@ class Verify_mdl extends Base_Model
         // set the values of member variables.
         $this->_verifying_row = $this->get($id, TRUE);
     }
-    
-    public function verify_with($verifying_key) {
-        
+
+    public function verify_with($verifying_key)
+    {
         if ($this->_verifying_row->verifying_key == $verifying_key) {
-            //ready to verify
+            // ready to verify
             
-            //first add to members
-            $this->_table_name = 'members'; //setup tablename
+            // first add to members
+            $this->_table_name = 'members'; // setup tablename
             
             $id = $this->save(array(
-            'username' => $this->_verifying_row->username,
-            'hashpass' => $this->_verifying_row->hashpass,
-            'email' => $this->_verifying_row->email,
-            'register_date' => $this->_verifying_row->register_date,
-            'is_active' => TRUE
+                'username' => $this->_verifying_row->username,
+                'hashpass' => $this->_verifying_row->hashpass,
+                'email' => $this->_verifying_row->email,
+                'register_date' => $this->_verifying_row->register_date,
+                'is_active' => TRUE
             ));
             
-            
-            //then delete from verifypending
-            $this->_table_name = 'verifypending'; //setup tablename
+            // then delete from verifypending
+            $this->_table_name = 'verifypending'; // setup tablename
             echo $this->_verifying_row->id;
             $this->delete($this->_verifying_row->id);
             
-            
             echo 'successfully added with id = ' . $id;
-        }
-        else {
-            //key not matched
+        } else {
+            // key not matched
             echo 'key not matched';
         }
     }
 }
 
-//the hasing function
-function hashit($string){
+// the hasing function
+function hashit($string)
+{
     return hash('sha512', config_item('encrypt_key8') . $string . config_item('encrypt_key16') . 'ce-ncit' . config_item('encrypt_key32'));
 }
 
