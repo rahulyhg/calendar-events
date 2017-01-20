@@ -72,7 +72,7 @@ class Login_mdl extends Base_Model
     {
         // check if email or username is entered.
         // assuming '@' is only possible in email and not username
-        if (strpos($this->_loginby, '@') === TRUE) {
+        if (strpos($this->_loginby, '@') !== FALSE) {
             return $this->_login_by_email();
         } else {
             echo 'login by username';
