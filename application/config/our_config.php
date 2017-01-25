@@ -1,4 +1,6 @@
 <?php
+defined('BASEPATH') or exit('No direct script access allowed');
+
 //simple site config items
 $config['site_name'] = 'Calendar Events';
 

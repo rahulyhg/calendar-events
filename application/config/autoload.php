@@ -40,7 +40,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
  * |
  */
 $autoload['packages'] = array(
-    APPPATH . 'third_party' . '/recaptcha/autoload.php'
+    APPPATH . 'third_party'
 );
 
 /*
@@ -110,7 +110,8 @@ $autoload['helper'] = array(
  * |
  */
 $autoload['config'] = array(
-    'our_config'
+    'our_config',
+    'fb_config'
 );
 
 /*

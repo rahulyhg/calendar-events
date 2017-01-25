@@ -28,6 +28,8 @@ defined('BASEPATH') or exit('No direct script access allowed');
 Or Login with facebook: 
 <div type="submit" class="fb-login-button btn" data-max-rows="2" data-size="medium" data-show-faces="false" data-auto-logout-link="false"></div>
 </div>
+<br />
+<?php echo anchor(htmlspecialchars($fb_url), 'Login with facebook'); ?>
 
 </form>
 <br />
