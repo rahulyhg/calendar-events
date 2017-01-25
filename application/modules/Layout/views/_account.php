@@ -4,7 +4,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 <!DOCTYPE html>
 <html>
 <head>
-<title><?php echo $src_action; ?></title>
+<title><?php echo $data['src_action']; ?></title>
 <meta name="viewport" content="width=device-width, initialscale=1.0">
 <!-- Bootstrap -->
 	<?php echo link_tag('bootstrap/css/bootstrap.min.css'); ?>
@@ -21,7 +21,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 		</div>
 
 		<div class="well">
-			<?php $this->load->view("{$src_module}/{$src_action}/{$view_page}", array($loginby,$errors)); ?>
+			<?php $this->load->view("{$data['src_module']}/{$data['src_action']}/{$data['view_page']}", $data); ?>
 		</div>
 
 	</div>

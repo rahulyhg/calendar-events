@@ -15,7 +15,7 @@ class Layout extends MX_Controller
     }
     
     public function account($data) {
-        $this->load->view('_account', $data);
+        $this->load->view('_account', array('data' => $data));
         //$this->load->view("{$data['src_module']}/{$data['src_action']}/{$data['view_page']}", $data);
         //$this->load->view('_foot');
     }
