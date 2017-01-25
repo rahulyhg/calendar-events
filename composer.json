@@ -1,0 +1,7 @@
+{
+  "name" : "calendar-events",
+  "repositories" : [ {
+    "type" : "composer",
+    "url" : "https://packagist.org/"
+  } ]
+}
