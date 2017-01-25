@@ -57,6 +57,22 @@ class Users extends Form_Controller
 
     public function signup()
     {
+        require (APPPATH . 'third_party' . '/recaptcha/autoload.php');
+        //check recaptcha
+        $response = $this->input->post('g-recaptcha-response');
+        if ($response != '') {
+            $recaptcha = new \ReCaptcha\ReCaptcha('6LcdHxMUAAAAAHcJ8Ai6WhV-VXsWtHzenRaN-jRY');
+            $resp = $recaptcha->verify($_POST['g-recaptcha-response'], $_SERVER['REMOTE_ADDR']);
+            if ($resp->isSuccess()) {
+                // verified!
+                echo 'verified';
+            } else {
+                $errors = $resp->getErrorCodes();
+            }
+        }
+        
+        
+        
         if ($this->form_validation->run() == FALSE) {
             // invalid form
             $this->signupform($this->input->post('username', 'TRUE'), $this->input->post('email', 'TRUE'), validation_errors());
