@@ -3,5 +3,9 @@
   "repositories" : [ {
     "type" : "composer",
     "url" : "https://packagist.org/"
-  } ]
+  } ],
+  "require" : {
+    "facebook/graph-sdk" : "~5.0",
+    "google/recaptcha": "~1.1"
+  }
 }

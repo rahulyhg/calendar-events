@@ -146,7 +146,7 @@ $config['subclass_prefix'] = 'MY_';
  * | Note: This will NOT disable or override the CodeIgniter-specific
  * | autoloading (application/config/autoload.php)
  */
-$config['composer_autoload'] = FALSE;
+$config['composer_autoload'] = TRUE;
 
 /*
  * |--------------------------------------------------------------------------
@@ -401,7 +401,7 @@ $config['sess_regenerate_destroy'] = FALSE;
  * |
  */
 $config['cookie_prefix'] = 'ncitce';
-$config['cookie_domain'] = '.ncitce.com';
+$config['cookie_domain'] = '.ncitce.comeze.com';
 $config['cookie_path'] = '/';
 $config['cookie_secure'] = FALSE;
 $config['cookie_httponly'] = TRUE;

@@ -43,16 +43,16 @@ class Users extends Form_Controller
         
         if ($this->form_validation->run() == FALSE) {
             // invalid form
-            $this->loginform($this->input->post('loginby', 'TRUE'), validation_errors(), htmlspecialchars($loginUrl));
+            $this->loginform($this->input->post('loginby', 'TRUE'), validation_errors(), $loginUrl);
         } else {
             // valid form
             
             if ($this->users_mdl->login() == FALSE) {
                 // incorrect credentials
-                $this->loginform($this->input->post('loginby', 'TRUE'), 'Wrong Username or Password');
+                $this->loginform($this->input->post('loginby', 'TRUE'), 'Wrong Username or Password', $loginUrl);
             } else {
                 // login successful
-                // redirect(base_url('home'), 'refresh');
+                // redirect(base_url('users/home'), 'refresh');
             }
         }
     }
@@ -103,13 +103,13 @@ class Users extends Form_Controller
         
         if ($this->form_validation->run() == FALSE) {
             // invalid form
-            $this->signupform($this->input->post('username', 'TRUE'), $this->input->post('email', 'TRUE'), validation_errors(), htmlspecialchars($loginUrl));
+            $this->signupform($this->input->post('username', 'TRUE'), $this->input->post('email', 'TRUE'), validation_errors(), $loginUrl);
         } else {
             // valid form
             $check = $this->users_mdl->signup();
             if ($check != '') {
                 // username/email already registered.
-                $this->loginform($this->input->post('loginby', 'TRUE'), $check . ' already taken');
+                $this->signupform($this->input->post('loginby', 'TRUE'), $check . ' already taken');
             } else {
                 // signup successful
                 // redirect(base_url('home'), 'refresh');
@@ -225,7 +225,7 @@ class Users extends Form_Controller
         
         // User is logged in with a long-lived access token.
         // You can redirect them to a members-only page.
-        //header('Location: https://example.com/members.php');
+        //redirect(base_url('users/home'), 'refresh');
     }
 
     public function forgot()
