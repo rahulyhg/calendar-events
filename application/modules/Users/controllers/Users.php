@@ -7,10 +7,15 @@ class Users extends Form_Controller
     function __construct()
     {
         parent::__construct();
-        if (!session_id()) {
+        
+        
+        if (! session_id()) {
             session_start();
         }
+        //$this->load->library('session');
+        // load the modules/Users/models/users_mdl.php/Users_mdl
         $this->load->model('users_mdl');
+        
         // for verification
         // $this->load->model('Email_mdl');
     }
@@ -33,15 +38,17 @@ class Users extends Form_Controller
         $fb = new Facebook\Facebook([
             'app_id' => config_item('app_id'), // Replace {app-id} with your app id
             'app_secret' => config_item('app_secret'),
-            'default_graph_version' => 'v2.8',
+            'default_graph_version' => 'v2.8'
         ]);
         
         $helper = $fb->getRedirectLoginHelper();
         
-        $permissions = ['email']; // Optional permissions
+        $permissions = [
+            'email'
+        ]; // Optional permissions
         $loginUrl = $helper->getLoginUrl(base_url('users/fb_callback'), $permissions);
         
-        //$loginUrl = htmlspecialchars($loginUrl) ;
+        // $loginUrl = htmlspecialchars($loginUrl) ;
         
         if ($this->form_validation->run() == FALSE) {
             // invalid form
@@ -59,6 +66,7 @@ class Users extends Form_Controller
         }
     }
 
+    //@TODO add the full name field
     private function signupform($username, $email, $errors = '', $fb_url = '')
     {
         $data = array(
@@ -75,20 +83,20 @@ class Users extends Form_Controller
 
     public function signup()
     {
-        
         $fb = new Facebook\Facebook([
             'app_id' => config_item('app_id'), // Replace {app-id} with your app id
             'app_secret' => config_item('app_secret'),
-            'default_graph_version' => 'v2.8',
+            'default_graph_version' => 'v2.8'
         ]);
         
         $helper = $fb->getRedirectLoginHelper();
         
-        $permissions = ['email']; // Optional permissions
+        $permissions = [
+            'email'
+        ]; // Optional permissions
         $loginUrl = $helper->getLoginUrl(base_url('users/fb_callback'), $permissions);
         
-        //$loginUrl = htmlspecialchars($loginUrl) ;
-        
+        // $loginUrl = htmlspecialchars($loginUrl) ;
         
         // check recaptcha
         $response = $this->input->post('g-recaptcha-response');
@@ -140,8 +148,9 @@ class Users extends Form_Controller
          * $this->load->view('index.php', $data);
          */
     }
-    
-    public function fb_callback () {
+
+    public function fb_callback()
+    {
         $this->users_mdl->verify_fb();
     }
 

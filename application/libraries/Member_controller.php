@@ -8,7 +8,6 @@ class Member_Controller extends Ce_Controller
     {
         parent::__construct();
         $this->load->library('session');
-        $this->load->model('user_model');
         $this->load->helper('security');
         //echo 'Member_controller___construct echo';
     }
