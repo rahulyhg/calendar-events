@@ -34,8 +34,9 @@ class Users_mdl extends CI_Model
 
     public function verify($id, $verifying_key)
     {
-        $this->load->model('verify_mdl', $id);
-        $id = $this->_action->verify_with($verifying_key);
+        $this->load->model('verify_mdl');
+        $this->verify_mdl->verify_this($id);
+        $id = $this->verify_mdl->verify_with($verifying_key);
     }
 }
 

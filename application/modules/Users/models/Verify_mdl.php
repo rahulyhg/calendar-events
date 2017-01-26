@@ -15,19 +15,22 @@ class Verify_mdl extends Base_Model
 
     protected $_rules = array();
 
-    private $_verifying_row;
+    private $_verifying_row = '';
 
     public function __construct($id = null)
     {
         parent::__construct();
         $this->_table_name = 'verifypending';
+    }
+    public function verify_this($id){
         // set the values of member variables.
         $this->_verifying_row = $this->get($id, TRUE);
     }
-
     public function verify_with($verifying_key)
     {
-        if ($this->_verifying_row->verifying_key == $verifying_key) {
+        if ($this->_verifying_row
+            && $this->_verifying_row->verifying_key == $verifying_key
+        ) {
             // ready to verify
 
             // first add to members

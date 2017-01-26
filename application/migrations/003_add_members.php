@@ -8,7 +8,7 @@ class Migration_Add_members extends CI_Migration
     {
         $field = array(
             'id' => array(
-                'type' => 'varchar',
+                'type' => 'integer',
                 'unsigned' => TRUE,
                 'auto_increment' =>TRUE
             ),

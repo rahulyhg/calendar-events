@@ -8,7 +8,7 @@ class Migration_Add_verifypending extends CI_Migration
     {
         $field = array(
             'id' => array(
-                'type' => 'varchar',
+                'type' => 'integer',
                 'unsigned' => TRUE,
                 'auto_increment' =>TRUE
             ),
@@ -40,11 +40,11 @@ class Migration_Add_verifypending extends CI_Migration
         $this->dbforge->add_key(array(
             'id'
         ));
-        $this->dbforge->create_table('verify_pending');
+        $this->dbforge->create_table('verifypending');
     }
 
     public function down()
     {
-        $this->dbforge->drop_table('verify_pending');
+        $this->dbforge->drop_table('verifypending');
     }
 }
