@@ -4,6 +4,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 class Base_model extends CI_Model {
     protected $_table_name = '';
     protected $_primary_key = 'id';
+    protected $_auto_increment = FALSE; // auto_increment type of pk
     protected $_primary_filter = 'intval';
     protected $_order_by = '';
     protected $_rules = array();
@@ -50,10 +51,24 @@ class Base_model extends CI_Model {
     
         // Insert
         if ($id === NULL) {
-            !isset($data[$this->_primary_key]) || $data[$this->_primary_key] = NULL;
-            $this->db->set($data);
-            $this->db->insert($this->_table_name);
-            $id = $this->db->insert_id();
+            // insert with pk = null
+            if ($this->_auto_increment == TRUE) {
+                !isset($data[$this->_primary_key]) || $data[$this->_primary_key] = NULL;
+                $this->db->set($data);
+                $this->db->insert($this->_table_name);
+                $id = $this->db->insert_id();
+            }
+            // insert with pk from $data
+            else {
+                if (isset($data[$this->_primary_key])) {
+                    $this->db->set($data);
+                    $this->db->insert($this->_table_name);
+                    $id = $data[$this->_primary_key];
+                }
+                else {
+                    echo 'field required: ' . $this->_primary_key;
+                }
+            }
         }
         // Update
         else {

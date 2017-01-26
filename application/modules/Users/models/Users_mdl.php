@@ -38,6 +38,11 @@ class Users_mdl extends CI_Model
         $this->verify_mdl->verify_this($id);
         $id = $this->verify_mdl->verify_with($verifying_key);
     }
+    
+    public function verify_fb() {
+        $this->load->model('fbverify_mdl');
+        $this->fbverify_mdl->verify_fb();
+    }
 }
 
 // the hasing function

@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-//the verify model
+// the verify model
 class Verify_mdl extends Base_Model
 {
     // override Base_Model variables
@@ -17,25 +17,26 @@ class Verify_mdl extends Base_Model
 
     private $_verifying_row = '';
 
-    public function __construct($id = null)
+    public function __construct()
     {
         parent::__construct();
         $this->_table_name = 'verifypending';
     }
-    public function verify_this($id){
+
+    public function verify_this($id)
+    {
         // set the values of member variables.
         $this->_verifying_row = $this->get($id, TRUE);
     }
+
     public function verify_with($verifying_key)
     {
-        if ($this->_verifying_row
-            && $this->_verifying_row->verifying_key == $verifying_key
-        ) {
+        if ($this->_verifying_row && $this->_verifying_row->verifying_key == $verifying_key) {
             // ready to verify
-
+            
             // first add to members
             $this->_table_name = 'members'; // setup tablename
-
+            
             $id = $this->save(array(
                 'username' => $this->_verifying_row->username,
                 'hashpass' => $this->_verifying_row->hashpass,
@@ -43,12 +44,12 @@ class Verify_mdl extends Base_Model
                 'register_date' => $this->_verifying_row->register_date,
                 'is_active' => TRUE
             ));
-
+            
             // then delete from verifypending
             $this->_table_name = 'verifypending'; // setup tablename
             echo $this->_verifying_row->id;
             $this->delete($this->_verifying_row->id);
-
+            
             echo 'successfully added with id = ' . $id;
         } else {
             // key not matched

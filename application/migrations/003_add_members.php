@@ -14,7 +14,8 @@ class Migration_Add_members extends CI_Migration
             ),
             'username' => array(
                 'type' => 'varchar',
-                'constraint' => '128'
+                'constraint' => '128',
+                'unique' => TRUE
             ),
             'hashpass' => array(
                 'type' => 'char',
@@ -22,7 +23,8 @@ class Migration_Add_members extends CI_Migration
             ),
             'email' => array(
                 'type' => 'varchar',
-                'constraint' => '254'
+                'constraint' => '254',
+                'unique' => TRUE
             ),
             'register_date' => array(
                 'type' => 'datetime'
