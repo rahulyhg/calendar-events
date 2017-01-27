@@ -4,7 +4,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 <!DOCTYPE html>
 <html>
 <head>
-<title><?php echo $data['src_action']; ?></title>
+<title><?php echo ucfirst($data['src_action']); ?></title>
 <meta name="viewport" content="width=device-width, initialscale=1.0">
 <!-- Bootstrap -->
 	<?php echo link_tag('bootstrap/css/bootstrap.min.css'); ?>

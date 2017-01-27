@@ -26,7 +26,7 @@ class Users extends Form_Controller
             'loginby' => $loginby,
             'src_module' => 'users',
             'src_action' => 'login',
-            'view_page' => 'loginform',
+            'view_page' => 'LoginForm',
             'errors' => $errors,
             'fb_url' => $fb_url
         );
@@ -74,7 +74,7 @@ class Users extends Form_Controller
             'email' => $email,
             'src_module' => 'users',
             'src_action' => 'signup',
-            'view_page' => 'signupform',
+            'view_page' => 'SignupForm',
             'errors' => $errors,
             'fb_url' => $fb_url
         );
