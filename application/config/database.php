@@ -70,15 +70,57 @@ defined('BASEPATH') or exit('No direct script access allowed');
  * | The $query_builder variables lets you determine whether or not to load
  * | the query builder class.
  */
-$active_group = 'default';
+$active_group = 'nopassword';
 $query_builder = TRUE;
 
-$db['default'] = array(
+$db['nopassword'] = array(
+		'dsn'   => '',
+		'hostname' => '192.168.1.118:43066',
+		'username' => 'root',
+		'password' => '',
+		'database' => 'calendar_events',
+		'dbdriver' => 'mysqli',
+		'dbprefix' => '',
+		'pconnect' => TRUE,
+		'db_debug' => TRUE,
+		'cache_on' => FALSE,
+		'cachedir' => '',
+		'char_set' => 'utf8',
+		'dbcollat' => 'utf8_general_ci',
+		'swap_pre' => '',
+		'encrypt' => FALSE,
+		'compress' => FALSE,
+		'stricton' => FALSE,
+		'failover' => array()
+);
+
+$db['sanjeev'] = array(
+		'dsn'   => '',
+		'hostname' => 'localhost',
+		'username' => 'root',
+		'password' => 'dgheet1z',
+		'database' => 'calendar_events',
+		'dbdriver' => 'mysqli',
+		'dbprefix' => '',
+		'pconnect' => TRUE,
+		'db_debug' => TRUE,
+		'cache_on' => FALSE,
+		'cachedir' => '',
+		'char_set' => 'utf8',
+		'dbcollat' => 'utf8_general_ci',
+		'swap_pre' => '',
+		'encrypt' => FALSE,
+		'compress' => FALSE,
+		'stricton' => FALSE,
+		'failover' => array()
+);
+
+$db['000webhost'] = array(
     'dsn' => '',
-    'hostname' => 'localhost',
-    'username' => 'root',
+    'hostname' => '104.20.68.46',
+    'username' => 'id631710_sanjeev',
     'password' => 'dgheet1z',
-    'database' => 'college_events',
+    'database' => 'id631710_calendar_events',
     'dbdriver' => 'mysqli',
     'dbprefix' => '',
     'pconnect' => FALSE,
@@ -93,4 +135,26 @@ $db['default'] = array(
     'stricton' => FALSE,
     'failover' => array(),
     'save_queries' => TRUE
+);
+				
+$db['sql2012'] = array(	//not working
+	'dsn' => '',
+	'hostname' => 'DESKTOP-795A69O',
+	'username' => 'sanjeev',
+	'password' => 'RN4.10B-NF61',
+	'database' => 'calendar_events',
+	'dbdriver' => 'sqlsrv',
+	'dbprefix' => '',
+	'pconnect' => FALSE,
+	'db_debug' => (ENVIRONMENT !== 'production'),
+	'cache_on' => FALSE,
+	'cachedir' => '',
+	'char_set' => 'utf8',
+	'dbcollat' => 'utf8_general_ci',
+	'swap_pre' => '',
+	'encrypt' => FALSE,
+	'compress' => FALSE,
+	'stricton' => FALSE,
+	'failover' => array(),
+	'save_queries' => TRUE
 );
