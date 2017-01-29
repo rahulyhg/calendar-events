@@ -1,7 +1,7 @@
 ﻿<?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class Users extends Member_Controller
+class Users extends MX_Controller
 {
 
     function __construct()
@@ -33,7 +33,8 @@ class Users extends Member_Controller
     public function login()
     {
 		var_dump($this->session->userdata());
-		$afterlogin = base_url('users/home');
+        var_dump($this->session->flashdata());
+		$afterlogin = base_url('login');
 		// if user is already logged in
 		if ($this->users_mdl->loggedin()) {
 			echo "User logged in so redirecting to {$afterlogin}";
@@ -41,7 +42,8 @@ class Users extends Member_Controller
 			return TRUE;
 		}
 	
-        $fbloginUrl = $this->users_mdl->fb(TRUE);
+        //$fbloginUrl = $this->users_mdl->fb(TRUE);
+        $fbloginUrl = '';
         
         // $loginUrl = htmlspecialchars($loginUrl) ;
         
@@ -57,7 +59,9 @@ class Users extends Member_Controller
             } else {
                 // login successful
 				echo "Redirecting you to {$afterlogin}";
-                redirect($afterlogin, 'refresh');
+                var_dump($this->session->userdata());
+                //redirect($afterlogin, 'refresh');
+                exit();
             }
         }
     }

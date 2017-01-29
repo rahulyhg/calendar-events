@@ -52,18 +52,27 @@ class Login_mdl extends Base_Model
             'hashpass' => $this->_hashpass
         );
         var_dump($login_data);
-        $userdata = $this->get_by($login_data);
+        $userdata = $this->get_by($login_data, TRUE);
 
         if (count($userdata)) {
             // correct email password combination
-            // echo 'email and password correct';
-			$sesdata = array(
+            // set session and then redirect
+
+            $_SESSION['id'] = $userdata->id;
+            $_SESSION['username'] = $userdata->username;
+            $_SESSION['email'] = $userdata->email;
+            $_SESSION['loginby'] = 'email';
+            $_SESSION['loggedin'] = TRUE;
+			/*
+            $sesdata = array(
 				'id' => $userdata->id,
 				'username' => $userdata->username,
 				'email' => $userdata->email,
+                'loginby' => 'email',
 				'loggedin' => TRUE
 			);
-			$this->session->set($sesdata);
+			$this->session->set_userdata($sesdata);
+            */
             return TRUE;
         }
         return FALSE;
@@ -79,11 +88,21 @@ class Login_mdl extends Base_Model
             'hashpass' => $this->_hashpass
         );
         // var_dump ($login_data);
-        $userdata = $this->get_by($login_data);
+        $userdata = $this->get_by($login_data, TRUE);
+
+        echo 'id : '.$userdata->username;
 
         if (count($userdata)) {
             // correct username password combination
-            // echo 'login correct';
+            // set session and then redirect
+
+            $sesdata = array(
+                'id' => $userdata->id,
+                'username' => $userdata->username,
+                'loginby' => 'username',
+                'loggedin' => TRUE
+            );
+            $this->session->set_userdata($sesdata);
             return TRUE;
         }
         return FALSE;

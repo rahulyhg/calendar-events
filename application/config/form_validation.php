@@ -2,11 +2,18 @@
 defined('BASEPATH') or exit('No direct script access allowed');
 
 $config = array(
+    // if username is supplied.
+    if (strpos($this->input->post('loginby'), '@') === null) {
+        $loginrule = 'alpha_dash';
+    }
+    else {
+        $loginrule = 'valid_email';
+    }
     'users/login' => array(
         array(
             'field' => 'loginby',
             'label' => 'Loginby',
-            'rules' => 'trim|required|alpha_dash|min_length[6]|max_length[128]',
+            'rules' => 'trim|required|' . $loginrule . '|min_length[6]|max_length[128]',
             'errors' => array(
                 'required' => 'Wrong Username or Password',
                 'alpha_dash' => 'Wrong Username or Password',

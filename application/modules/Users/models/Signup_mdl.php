@@ -15,6 +15,8 @@ class Signup_mdl extends Base_Model
 
     protected $_rules = array();
 
+    protected $_auto_increment = TRUE;
+
     // data for rows
     private $_username;
 

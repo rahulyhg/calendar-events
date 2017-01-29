@@ -135,17 +135,6 @@ class Fbverify_mdl extends Base_Model
     {
         // Choose your app context helper
         $helper = $this->_fb->getRedirectLoginHelper();
-        //$helper = $this->_fb->getCanvasHelper();
-        //$helper = $fb->getPageTabHelper();
-        //$helper = $fb->getJavaScriptHelper();
-
-        if (isset($_GET['state'])) {
-            $helper->getPersistentDataHandler()->set('state', $_GET['state']);
-            if($_SESSION['FBRLH_' . 'state']) {
-                $_SESSION['FBRLH_' . 'state'] = $_GET['state'];
-            }
-        }
-
         try {
             $accessToken = $helper->getAccessToken();
         } catch (Facebook\Exceptions\FacebookResponseException $e) {
@@ -157,14 +146,6 @@ class Fbverify_mdl extends Base_Model
             echo 'Facebook SDK returned an error: ' . $e->getMessage();
             exit();
         }
-
-        var_dump($accessToken);
-
-        $helper = $this->_fb->getRedirectLoginHelper();
-        
-        
-
-        
         
         if (! isset($accessToken)) {
             if ($helper->getError()) {

@@ -17,6 +17,8 @@ class Verify_mdl extends Base_Model
 
     private $_verifying_row = '';
 
+    protected $_auto_increment = TRUE;
+
     public function __construct()
     {
         parent::__construct();
