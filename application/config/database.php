@@ -75,7 +75,7 @@ $query_builder = TRUE;
 
 $db['nopassword'] = array(
 		'dsn'   => '',
-		'hostname' => '192.168.1.118:43066',
+		'hostname' => 'localhost',
 		'username' => 'root',
 		'password' => '',
 		'database' => 'calendar_events',

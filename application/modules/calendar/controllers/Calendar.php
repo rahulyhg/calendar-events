@@ -1,7 +1,7 @@
 ﻿<?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class Calendar extends MX_Controller
+class Calendar extends Member_Controller
 {
 
     function __construct()
