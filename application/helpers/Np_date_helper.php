@@ -6,7 +6,33 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 // ------------------------------------------------------------------------
 
-if (! function_exists('mdate')) {
+if (! function_exists('np_convert_to_greg')) {
+	/**
+	 * Converts nepali date B.S. to gregorian date A.D.
+     *
+     * @param
+     *            string the nepali date format
+     * @return string the english date format
+     */
+	function np_convert_to_greg($date) {
+		
+	}
+}
+
+if (! function_exists('np_convert_from_greg')) {
+	/**
+	 * Converts nepali date B.S. to gregorian date A.D.
+     *
+     * @param
+     *            string the english date
+     * @return string the nepali date
+     */
+	function np_convert_from_greg($date) {
+		
+	}
+}
+
+// if (! function_exists('mdate')) {
 
     /**
      * Need to cite this --------------------
@@ -17,6 +43,8 @@ if (! function_exists('mdate')) {
      *            int
      * @return int
      */
+	 
+	 /*
     function mdate($datestr = '', $time = '')
     {
         if ($datestr === '') {
@@ -29,7 +57,8 @@ if (! function_exists('mdate')) {
         
         return date($datestr, $time);
     }
-}
+	*/
+// }
 
 // ------------------------------------------------------------------------
 
@@ -153,7 +182,7 @@ if (! function_exists('np_date_range')) {
         
         // $is_unix = ! (! $is_unix or $is_unix === 'days');
         
-        Validate input and try strtotime() on invalid timestamps/intervals, just in case
+        // // Validate input and try strtotime() on invalid timestamps/intervals, just in case
         // if ((! ctype_digit((string) $unix_start) && ($unix_start = @strtotime($unix_start)) === FALSE) or (! ctype_digit((string) $mixed) && ($is_unix === FALSE or ($mixed = @strtotime($mixed)) === FALSE)) or ($is_unix === TRUE && $mixed < $unix_start)) {
             // return FALSE;
         // }
@@ -235,10 +264,10 @@ if (! function_exists('np_date_range')) {
                 // $range[] = $from->format($format);
             // }
             
-            Our loop only appended dates prior to our end date
+        // //    Our loop only appended dates prior to our end date
             // $range[] = $arg->format($format);
         // }
         
         // return $range;
     // }
-// }
+}

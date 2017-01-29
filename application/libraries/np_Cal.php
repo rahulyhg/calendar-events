@@ -15,7 +15,7 @@ class Np_Cal
      */
     public $template = '';
 	
-	public $language = 'nepali'; // default is english
+	public $language = 'english'; // default is english
 
     public $replacements = array();
 
@@ -23,7 +23,7 @@ class Np_Cal
 
     public $month_type = 'long';
 
-    public $day_type = 'short';
+    public $day_type = 'abr';
 
     public $show_next_prev = FALSE;
 

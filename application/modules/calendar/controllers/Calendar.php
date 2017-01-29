@@ -16,6 +16,7 @@ class Calendar extends MX_Controller
 	
 	public function test() {
 		$this->load->library('np_cal');
+		$this->load->helper('np_date_helper');
 		echo $this->np_cal->np_get_month_name('01');
 		var_dump( $this->np_cal->np_get_day_names());
 	}
