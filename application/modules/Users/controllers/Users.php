@@ -1,20 +1,17 @@
 ﻿<?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class Users extends Form_Controller
+class Users extends Member_Controller
 {
 
     function __construct()
     {
         parent::__construct();
         
-        
-        if (! session_id()) {
-            session_start();
-        }
         //$this->load->library('session');
         // load the modules/Users/models/users_mdl.php/Users_mdl
         $this->load->model('users_mdl');
+		$this->load->library('form_validation');
         
         // for verification
         // $this->load->model('Email_mdl');
@@ -35,33 +32,32 @@ class Users extends Form_Controller
 
     public function login()
     {
-        $fb = new Facebook\Facebook([
-            'app_id' => config_item('app_id'), // Replace {app-id} with your app id
-            'app_secret' => config_item('app_secret'),
-            'default_graph_version' => 'v2.8'
-        ]);
-        
-        $helper = $fb->getRedirectLoginHelper();
-        
-        $permissions = [
-            'email'
-        ]; // Optional permissions
-        $loginUrl = $helper->getLoginUrl(base_url('users/fb_callback'), $permissions);
+		var_dump($this->session->userdata());
+		$afterlogin = base_url('users/home');
+		// if user is already logged in
+		if ($this->users_mdl->loggedin()) {
+			echo "User logged in so redirecting to {$afterlogin}";
+			redirect($afterlogin, 'refresh'); // code after this should not run
+			return TRUE;
+		}
+	
+        $fbloginUrl = $this->users_mdl->fb(TRUE);
         
         // $loginUrl = htmlspecialchars($loginUrl) ;
         
         if ($this->form_validation->run() == FALSE) {
             // invalid form
-            $this->loginform($this->input->post('loginby', 'TRUE'), validation_errors(), $loginUrl);
+            $this->loginform($this->input->post('loginby', 'TRUE'), validation_errors(), $fbloginUrl);
         } else {
             // valid form
             
             if ($this->users_mdl->login() == FALSE) {
                 // incorrect credentials
-                $this->loginform($this->input->post('loginby', 'TRUE'), 'Wrong Username or Password', $loginUrl);
+                $this->loginform($this->input->post('loginby', 'TRUE'), 'Wrong Username or Password', $fbloginUrl);
             } else {
                 // login successful
-                // redirect(base_url('users/home'), 'refresh');
+				echo "Redirecting you to {$afterlogin}";
+                redirect($afterlogin, 'refresh');
             }
         }
     }
@@ -151,7 +147,7 @@ class Users extends Form_Controller
 
     public function fb_callback()
     {
-        $this->users_mdl->verify_fb();
+        $this->users_mdl->fb();
     }
 
     public function forgot()

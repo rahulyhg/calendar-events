@@ -17,6 +17,14 @@ class Users_mdl extends CI_Model
         
         return $this->login_mdl->isgood();
     }
+	
+	public function loggedin() {
+		return (bool) $this->session->userdata('loggedin');
+	}
+	
+	public function logout() {
+		$this->session->sess_destroy();
+	}
 
     public function signup()
     {
@@ -39,8 +47,12 @@ class Users_mdl extends CI_Model
         $id = $this->verify_mdl->verify_with($verifying_key);
     }
     
-    public function verify_fb() {
+    public function fb($get_login_url = FALSE) {
         $this->load->model('fbverify_mdl');
+        echo 'loaded fb mdl';
+        if ($get_login_url) {
+            return $this->fbverify_mdl->get_login_url();
+        }
         $this->fbverify_mdl->verify_fb();
     }
 }
@@ -48,6 +60,9 @@ class Users_mdl extends CI_Model
 // the hasing function
 function hashit($string)
 {
-    return hash('sha512', config_item('encrypt_key8') . $string . config_item('encrypt_key16') . 'ce-ncit' . config_item('encrypt_key32'));
+    return hash('sha512', config_item('encrypt_key8') .
+            $string . config_item('encrypt_key16') .
+            'ce-ncit' . config_item('encrypt_key32')
+        );
 }
 

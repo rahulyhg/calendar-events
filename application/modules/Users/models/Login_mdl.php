@@ -57,6 +57,13 @@ class Login_mdl extends Base_Model
         if (count($userdata)) {
             // correct email password combination
             // echo 'email and password correct';
+			$sesdata = array(
+				'id' => $userdata->id,
+				'username' => $userdata->username,
+				'email' => $userdata->email,
+				'loggedin' => TRUE
+			);
+			$this->session->set($sesdata);
             return TRUE;
         }
         return FALSE;

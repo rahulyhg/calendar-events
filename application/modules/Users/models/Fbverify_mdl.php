@@ -12,29 +12,31 @@ class Fbverify_mdl extends Base_Model
     protected $_fbmembers_row = '';
     protected $_fb = '';
     protected $_user = '';
+    protected $_access_token = '';
 
     public function __construct()
     {
         parent::__construct();
+
         $this->_fb = new Facebook\Facebook([
             'app_id' => config_item('app_id'), // app_id and app_secret from config/fb_config.php
             'app_secret' => config_item('app_secret'),
-            'default_graph_version' => 'v2.8'
+            'default_graph_version' => 'v2.8',
+            'persistent_data_handler' => new CIFacebookPersistentDataHandler()
         ]);
-        
-        $accessToken = $this->_get_access_token(); // get access token from fb
+    }
+    
+    // function to verify facebook login / signup
+    public function verify_fb()
+    {
         $fields = array(
             'id',
             'name',
             'email',
             'timezone'
         );
-        $this->_retrieve($accessToken, $fields);
-    }
-    
-    // function to verify facebook login / signup
-    public function verify_fb()
-    {
+        $this->_retrieve($fields);
+
         // get fb id from response
         $fb_id = $this->_user['id'];
         
@@ -52,6 +54,15 @@ class Fbverify_mdl extends Base_Model
         }
     }
 
+    public function get_login_url() {
+        $helper = $this->_fb->getRedirectLoginHelper();
+        
+        $permissions = [ // Optional permissions
+            'email'
+        ]; 
+        return $helper->getLoginUrl(base_url('users/fb_callback'), $permissions);
+    }
+
     protected function _login_with_fb()
     {
         // set session data and redirect
@@ -60,10 +71,14 @@ class Fbverify_mdl extends Base_Model
 
     protected function _signup_with_fb()
     {
-        if (!$this->_user) {
-            echo 'ERROR: No user.';
-            exit();
-        }
+        $fields = array(
+            'id',
+            'name',
+            'email',
+            'timezone'
+        );
+        $this->_retrieve($fields);
+
         echo "fb_id: {$this->_user['id']}";
         echo "fb_email: {$this->_user['email']}";
         
@@ -118,8 +133,19 @@ class Fbverify_mdl extends Base_Model
 
     protected function _get_access_token()
     {
+        // Choose your app context helper
         $helper = $this->_fb->getRedirectLoginHelper();
-        
+        //$helper = $this->_fb->getCanvasHelper();
+        //$helper = $fb->getPageTabHelper();
+        //$helper = $fb->getJavaScriptHelper();
+
+        if (isset($_GET['state'])) {
+            $helper->getPersistentDataHandler()->set('state', $_GET['state']);
+            if($_SESSION['FBRLH_' . 'state']) {
+                $_SESSION['FBRLH_' . 'state'] = $_GET['state'];
+            }
+        }
+
         try {
             $accessToken = $helper->getAccessToken();
         } catch (Facebook\Exceptions\FacebookResponseException $e) {
@@ -131,6 +157,14 @@ class Fbverify_mdl extends Base_Model
             echo 'Facebook SDK returned an error: ' . $e->getMessage();
             exit();
         }
+
+        var_dump($accessToken);
+
+        $helper = $this->_fb->getRedirectLoginHelper();
+        
+        
+
+        
         
         if (! isset($accessToken)) {
             if ($helper->getError()) {
@@ -153,7 +187,7 @@ class Fbverify_mdl extends Base_Model
         $this->_authorize($accessToken); // validate $accessToken
                                          // will call exit() if not valid
         
-        return $accessToken;
+        $this->_access_token = $accessToken;
     }
 
     protected function _authorize($accessToken)
@@ -195,12 +229,13 @@ class Fbverify_mdl extends Base_Model
         // -------------------------------------------------------------------
     }
 
-    protected function _retrieve($accessToken, $fields)
+    protected function _retrieve($fields)
     {
+        $this->_get_access_token();
         $get_them = implode(',', $fields);
         try {
             // Returns a `Facebook\FacebookResponse` object
-            $response = $this->_fb->get('/me?fields=' . $get_them, $accessToken);
+            $response = $this->_fb->get('/me?fields=' . $get_them, $this->_access_token);
         } catch (Facebook\Exceptions\FacebookResponseException $e) {
             echo 'Graph returned an error: ' . $e->getMessage();
             exit();
