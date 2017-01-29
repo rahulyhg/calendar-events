@@ -7,13 +7,15 @@ defined('BASEPATH') or exit('No direct script access allowed');
 /**
  * CodeIgniter Calendar Class
  */
-class MY_Calendar extends CI_Calendar
+class Np_Cal
 {
 
     /**
      * as it is variables
      */
     public $template = '';
+	
+	public $language = 'nepali'; // default is english
 
     public $replacements = array();
 
@@ -21,13 +23,17 @@ class MY_Calendar extends CI_Calendar
 
     public $month_type = 'long';
 
-    public $day_type = 'abr';
+    public $day_type = 'short';
 
     public $show_next_prev = FALSE;
 
     public $next_prev_url = '';
 
     public $show_other_days = FALSE;
+	
+	public $CI= '';
+	
+	public $lang = '';
     
     // --------------------------------------------------------------------
     
@@ -44,10 +50,12 @@ class MY_Calendar extends CI_Calendar
      */
     public function __construct($config = array()) // overrides the CI_Calendar class
     {
-		parent :: __construct($config);
+		// set the instances to load CI classes 
+		$this->CI =& get_instance();
+		$this->lang = new CI_Lang();
 		
 		// @TODO add support for other lang (nep) later..
-        $this->lang->load('cal_lang', 'english');
+        $this->lang->load('cal', $this->language);
 
     }
     
@@ -285,7 +293,7 @@ class MY_Calendar extends CI_Calendar
      */
     public function np_get_day_names($day_type = '')
     {
-     /*   if ($day_type !== '') {
+        if ($day_type !== '') {
             $this->day_type = $day_type;
         }
         
@@ -323,11 +331,10 @@ class MY_Calendar extends CI_Calendar
         
         $days = array();
         for ($i = 0, $c = count($day_names); $i < $c; $i ++) {
-            $days[] = ($this->CI->lang->line('cal_' . $day_names[$i]) === FALSE) ? ucfirst($day_names[$i]) : $this->CI->lang->line('cal_' . $day_names[$i]);
+            $days[] = ($this->lang->line('cal_' . $day_names[$i]) === FALSE) ? ucfirst($day_names[$i]) : $this->lang->line('cal_' . $day_names[$i]);
         }
         
         return $days;
-	*/
     }
     
     // --------------------------------------------------------------------
