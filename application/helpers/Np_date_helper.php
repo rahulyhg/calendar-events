@@ -4,6 +4,9 @@
 **/
 defined('BASEPATH') or exit('No direct script access allowed');
 
+$load = new CI_loader();
+$load->model('cal_data');
+
 // ------------------------------------------------------------------------
 
 if (! function_exists('np_convert_to_greg')) {
@@ -32,7 +35,7 @@ if (! function_exists('np_convert_from_greg')) {
 	}
 }
 
-// if (! function_exists('mdate')) {
+if (! function_exists('np_date')) {
 
     /**
      * Need to cite this --------------------
@@ -44,8 +47,7 @@ if (! function_exists('np_convert_from_greg')) {
      * @return int
      */
 	 
-	 /*
-    function mdate($datestr = '', $time = '')
+    function np_date()
     {
         if ($datestr === '') {
             return '';
@@ -57,8 +59,7 @@ if (! function_exists('np_convert_from_greg')) {
         
         return date($datestr, $time);
     }
-	*/
-// }
+}
 
 // ------------------------------------------------------------------------
 
@@ -148,126 +149,3 @@ if (! function_exists('np_nice_date')) {
 }
 
 // ------------------------------------------------------------------------
-
-if (! function_exists('np_date_range')) {
-
-    /**
-     * Date range
-     *
-     * Returns a list of dates within a specified period.
-     *
-	 * @TODO customize this thing or else convert to gregorian and then run date_range
-	 *
-     * @param
-     *            int unix_start UNIX timestamp of period start date
-     * @param
-     *            int unix_end|days UNIX timestamp of period end date
-     *            or interval in days.
-     * @param
-     *            mixed is_unix Specifies whether the second parameter
-     *            is a UNIX timestamp or a day interval
-     *            - TRUE or 'unix' for a timestamp
-     *            - FALSE or 'days' for an interval
-     * @param
-     *            string date_format Output date format, same as in date()
-     * @return array
-     */
-    function np_date_range($unix_start = '', $mixed = '', $is_unix = TRUE, $format = 'Y-m-d')
-	{}
-    // {
-	
-        // if ($unix_start == '' or $mixed == '' or $format == '') {
-            // return FALSE;
-        // }
-        
-        // $is_unix = ! (! $is_unix or $is_unix === 'days');
-        
-        // // Validate input and try strtotime() on invalid timestamps/intervals, just in case
-        // if ((! ctype_digit((string) $unix_start) && ($unix_start = @strtotime($unix_start)) === FALSE) or (! ctype_digit((string) $mixed) && ($is_unix === FALSE or ($mixed = @strtotime($mixed)) === FALSE)) or ($is_unix === TRUE && $mixed < $unix_start)) {
-            // return FALSE;
-        // }
-        
-        // if ($is_unix && ($unix_start == $mixed or date($format, $unix_start) === date($format, $mixed))) {
-            // return array(
-                // date($format, $unix_start)
-            // );
-        // }
-        
-        // $range = array();
-        
-        // /*
-         // * NOTE: Even though the DateTime object has many useful features, it appears that
-         // * it doesn't always handle properly timezones, when timestamps are passed
-         // * directly to its constructor. Neither of the following gave proper results:
-         // *
-         // * new DateTime('<timestamp>')
-         // * new DateTime('<timestamp>', '<timezone>')
-         // *
-         // * --- available in PHP 5.3:
-         // *
-         // * DateTime::createFromFormat('<format>', '<timestamp>')
-         // * DateTime::createFromFormat('<format>', '<timestamp>', '<timezone')
-         // *
-         // * ... so we'll have to set the timestamp after the object is instantiated.
-         // * Furthermore, in PHP 5.3 we can use DateTime::setTimestamp() to do that and
-         // * given that we have UNIX timestamps - we should use it.
-         // */
-        // $from = new DateTime();
-        
-        // if (is_php('5.3')) {
-            // $from->setTimestamp($unix_start);
-            // if ($is_unix) {
-                // $arg = new DateTime();
-                // $arg->setTimestamp($mixed);
-            // } else {
-                // $arg = (int) $mixed;
-            // }
-            
-            // $period = new DatePeriod($from, new DateInterval('P1D'), $arg);
-            // foreach ($period as $date) {
-                // $range[] = $date->format($format);
-            // }
-            
-            // /*
-             // * If a period end date was passed to the DatePeriod constructor, it might not
-             // * be in our results. Not sure if this is a bug or it's just possible because
-             // * the end date might actually be less than 24 hours away from the previously
-             // * generated DateTime object, but either way - we have to append it manually.
-             // */
-            // if (! is_int($arg) && $range[count($range) - 1] !== $arg->format($format)) {
-                // $range[] = $arg->format($format);
-            // }
-            
-            // return $range;
-        // }
-        
-        // $from->setDate(date('Y', $unix_start), date('n', $unix_start), date('j', $unix_start));
-        // $from->setTime(date('G', $unix_start), date('i', $unix_start), date('s', $unix_start));
-        // if ($is_unix) {
-            // $arg = new DateTime();
-            // $arg->setDate(date('Y', $mixed), date('n', $mixed), date('j', $mixed));
-            // $arg->setTime(date('G', $mixed), date('i', $mixed), date('s', $mixed));
-        // } else {
-            // $arg = (int) $mixed;
-        // }
-        // $range[] = $from->format($format);
-        
-        // if (is_int($arg)) // Day intervals
-// {
-            // do {
-                // $from->modify('+1 day');
-                // $range[] = $from->format($format);
-            // } while (-- $arg > 0);
-        // } else // end date UNIX timestamp
-// {
-            // for ($from->modify('+1 day'), $end_check = $arg->format('Ymd'); $from->format('Ymd') < $end_check; $from->modify('+1 day')) {
-                // $range[] = $from->format($format);
-            // }
-            
-        // //    Our loop only appended dates prior to our end date
-            // $range[] = $arg->format($format);
-        // }
-        
-        // return $range;
-    // }
-}

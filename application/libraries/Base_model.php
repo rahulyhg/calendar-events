@@ -14,19 +14,12 @@ class Base_model extends CI_Model {
         parent::__construct();
     }
     
-    public function get($id = NULL, $single = FALSE){
-    
+    public function get($id = NULL, $method = 'result'){
         if ($id != NULL) {
             $filter = $this->_primary_filter;
             $id = $filter($id);
             $this->db->where($this->_primary_key, $id);
-            $method = 'row';
-        }
-        elseif($single == TRUE) {
-            $method = 'row';
-        }
-        else {
-            $method = 'result';
+            $method = 'row_array';
         }
     
         if (!count($this->db->order_by($this->_order_by))) {

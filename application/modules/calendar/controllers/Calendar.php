@@ -9,7 +9,7 @@ class Calendar extends Member_Controller
     {
         parent::__construct($this->_page_uri);
 		$this->load->library('np_cal');
-		$this->load->helper('np_date');
+        $this->load->model('calendar_mdl');
     }
 
     public function index()
@@ -19,6 +19,9 @@ class Calendar extends Member_Controller
 	
 	public function test() {
 		echo $this->np_cal->np_get_month_name('01');
-		print_r($this->np_cal->np_get_day_names());
+
+        echo $this->calendar_mdl->get_days_in_year(2073, 'year');
+        echo $this->calendar_mdl->get_days_in_month(10);
+        echo $this->calendar_mdl->np_generate();
 	}
 }
