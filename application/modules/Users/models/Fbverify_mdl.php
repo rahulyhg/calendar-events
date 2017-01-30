@@ -135,6 +135,9 @@ class Fbverify_mdl extends Base_Model
     {
         // Choose your app context helper
         $helper = $this->_fb->getRedirectLoginHelper();
+
+        isset($_GET['state']) && $_SESSION['FBRLH_state']=$_GET['state'];
+
         try {
             $accessToken = $helper->getAccessToken();
         } catch (Facebook\Exceptions\FacebookResponseException $e) {
