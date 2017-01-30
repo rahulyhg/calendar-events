@@ -66,7 +66,7 @@ class Calendar_mdl extends Base_Model
     {
     	if ($param2 === '') {
     		// year not given. set month and get the current year.
-    		$month = $param1;
+    		$month = substr($param2, 0, 1) == '0' ? substr($param2, 1) : $param2;
     		$cur_year = $this->np_date('YYYY');
     		$days_in_year = $this->get_days_in_year($cur_year);
     		return $days_in_year[$param1];
@@ -74,7 +74,7 @@ class Calendar_mdl extends Base_Model
     	else {
     		//year given.
     		$year = $param1;
-    		$month = $param2;
+    		$month = substr($param2, 0, 1) == '0' ? substr($param2, 1) : $param2;
     		$days_in_year = $this->get_days_in_year($year);
     		return $days_in_year[$month];
     	}
@@ -127,14 +127,14 @@ class Calendar_mdl extends Base_Model
 
 		// add the days passed before given month in the given year
 		for ($i = 1; $i < $date_array[1]; $i++) {
-			$total_days += $this->get_days_in_month($date_array[0], $date_array[1]);
+			$total_days += $this->get_days_in_month($date_array[0], $i);
 		}
 
 		// add the given days
 		$total_days += $date_array[2];
 
-		// add the days passed in 1944 to reset greg date to 1944-00-00 or 1943-12-31
-		$total_days += 122;
+		// add the days passed in 1943 to reset greg date to 1943-00-00 or 1943-12-31
+		$total_days += 102;
 		
 
 		// add total passed years
@@ -155,19 +155,22 @@ class Calendar_mdl extends Base_Model
 		$days_of_month = array(31, ($this->is_leap_year($gy)? 29: 28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
 
 		// add total passed month in the year
-		for ($gm = 1; $total_days >= $days_of_month[$gm]; $gm++) {
+		for ($gm = 0; $total_days >= $days_of_month[$gm]; $gm++) {
 			$total_days -= $days_of_month[$gm];
 		}
 
 		if ($total_days == 0) {
 			// if the days were exactly the no. of days in the month
-			$gm--;
+			$gm;
 			$gd = 31;
 			return "{$gy}-{$gm}-{$gd}";
 		}
 
 		// add total passed days passed in the month of the year
-		$gd += $total_days + 1;
+		$gd += $total_days;
+
+		$gm++;
+		$gd++;
 
 		return "{$gy}-{$gm}-{$gd}";
 	}
