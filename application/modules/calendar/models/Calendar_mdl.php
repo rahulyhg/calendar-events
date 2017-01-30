@@ -1,6 +1,15 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
+define('CONVSTD', '1943-04-14');	// conversion standard
+									// 2000-01-01 B.S. = 1944-03-13 A.D.
+
+// the global variables
+$gd = 1943;
+$gm = 1;
+$gd = 1;
+$total_days = 0;
+
 /**
  * Cal_data_model contains model, library and helper for nepali date
 */
@@ -78,7 +87,6 @@ class Calendar_mdl extends Base_Model
 
     	switch ($groupby) {
     		case 'month':
-    			echo 'month';
     			return array_values($result);
     		case 'year':
     			return array_sum($result) - $year;
@@ -94,11 +102,74 @@ class Calendar_mdl extends Base_Model
 	 * Converts nepali date B.S. to gregorian date A.D.
      *
      * @param
-     *            string the nepali date format
+     *            string the nepali date format (YYYY-MM-DD)
      * @return string the english date format
      */
-	function np_convert_to_greg($date) {
+	function np_convert_to_greg($date = '') {
+		global $total_days, $gy, $gm, $gd;
+
+		if ($date == '') {
+			$date = $this->_cur_date;
+		}
+
+		// index of $date_array:
+		// [0] year
+		// [1] month
+		// [2] day
+
+		$date_array = explode('-', $date);
+		var_dump($date_array);
+
+		// add the days passed before given year
+		for ($i = 2000; $i < $date_array[0]; $i++) {
+			$total_days += $this->get_days_in_year($i, 'year');
+		}
+
+		// add the days passed before given month in the given year
+		for ($i = 1; $i < $date_array[1]; $i++) {
+			$total_days += $this->get_days_in_month($date_array[0], $date_array[1]);
+		}
+
+		// add the given days
+		$total_days += $date_array[2];
+
+		// add the days passed in 1944 to reset greg date to 1944-00-00 or 1943-12-31
+		$total_days += 122;
 		
+
+		// add total passed years
+		for ($gy = 1943, $dy = ($this->is_leap_year($gy) ? 366 : 365) ; $total_days >= $dy; $gy++) { // 365 -60
+			$dy = ($this->is_leap_year($gy) ? 366 : 365);
+			$total_days -= $dy;
+		}
+
+		if ($total_days == 0) {
+			// if the days were exactly the no. of days in the year
+			$gy--;
+			$gm = 12;
+			$gd = 31;
+			return "{$gy}-{$gm}-{$gd}";
+		}
+
+		// set the array of days of the month in the year
+		$days_of_month = array(31, ($this->is_leap_year($gy)? 29: 28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
+
+		// add total passed month in the year
+		for ($gm = 1; $total_days >= $days_of_month[$gm]; $gm++) {
+			$total_days -= $days_of_month[$gm];
+		}
+
+		if ($total_days == 0) {
+			// if the days were exactly the no. of days in the month
+			$gm--;
+			$gd = 31;
+			return "{$gy}-{$gm}-{$gd}";
+		}
+
+		// add total passed days passed in the month of the year
+		$gd += $total_days + 1;
+
+		return "{$gy}-{$gm}-{$gd}";
 	}
 
 	/**
@@ -112,6 +183,16 @@ class Calendar_mdl extends Base_Model
 		
 	}
 
+	/**
+	 * Calculates wheather english year is leap year or not
+	 *
+	 * @param integer $year
+	 * @return boolean
+	 */
+	public function is_leap_year($year)
+	{
+		return (bool) !(($year % 100) ? ($year % 4) : ($year % 400));
+	}
 
 
     /**

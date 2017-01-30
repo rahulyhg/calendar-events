@@ -18,10 +18,10 @@ class Calendar extends Member_Controller
     }
 	
 	public function test() {
-		echo $this->np_cal->np_get_month_name('01');
+		//echo $this->np_cal->np_get_month_name('01');
 
-        echo $this->calendar_mdl->get_days_in_year(2073, 'year');
-        echo $this->calendar_mdl->get_days_in_month(10);
-        echo $this->calendar_mdl->np_generate();
+        //echo $this->calendar_mdl->get_days_in_year(2073, 'year');
+        //echo $this->calendar_mdl->get_days_in_month(10);
+        echo $this->calendar_mdl->np_convert_to_greg('2073-10-10');
 	}
 }
