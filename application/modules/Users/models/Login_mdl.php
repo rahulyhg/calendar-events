@@ -57,13 +57,7 @@ class Login_mdl extends Base_Model
         if (count($userdata)) {
             // correct email password combination
             // set session and then redirect
-
-            $_SESSION['id'] = $userdata->id;
-            $_SESSION['username'] = $userdata->username;
-            $_SESSION['email'] = $userdata->email;
-            $_SESSION['loginby'] = 'email';
-            $_SESSION['loggedin'] = TRUE;
-			/*
+			
             $sesdata = array(
 				'id' => $userdata->id,
 				'username' => $userdata->username,
@@ -72,7 +66,7 @@ class Login_mdl extends Base_Model
 				'loggedin' => TRUE
 			);
 			$this->session->set_userdata($sesdata);
-            */
+
             return TRUE;
         }
         return FALSE;
@@ -99,6 +93,7 @@ class Login_mdl extends Base_Model
             $sesdata = array(
                 'id' => $userdata->id,
                 'username' => $userdata->username,
+                'email' => '',
                 'loginby' => 'username',
                 'loggedin' => TRUE
             );

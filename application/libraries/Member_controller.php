@@ -10,11 +10,10 @@ class Member_Controller extends MX_Controller
         parent::__construct();
         $this->load->helper('security');
         //echo 'Member_controller___construct echo';
-        var_dump($this->session->userdata());
 
         if ($this->session->loggedin == FALSE) {
         	$this->session->set_flashdata('nextpage', $nextpage);
-        	//redirect(base_url('login'), 'refresh');
+        	redirect(base_url('login'), 'refresh');
         }
     }
 }

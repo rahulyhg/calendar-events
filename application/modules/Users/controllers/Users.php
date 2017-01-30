@@ -1,6 +1,12 @@
 ﻿<?php
 defined('BASEPATH') or exit('No direct script access allowed');
-
+/**Users
+ *
+ * This contains the user account access methods
+ *
+ * @TODO add better security
+ *
+*/
 class Users extends MX_Controller
 {
 
@@ -12,11 +18,29 @@ class Users extends MX_Controller
         // load the modules/Users/models/users_mdl.php/Users_mdl
         $this->load->model('users_mdl');
 		$this->load->library('form_validation');
+
+        $page = base_url('users/home'); // if user is logged in, redirect to $page
+
+        // if the method is not logout and user is already logged in
+        if ($this->uri->segment(2) != 'logout' && $this->users_mdl->loggedin()) {
+            echo "User logged in so redirecting to {$page}";
+            redirect($page, 'refresh'); // code after this should not run
+            exit();                     // so exit is used just in case
+        }
         
         // for verification
         // $this->load->model('Email_mdl');
     }
 
+//-----------------------------------------------------------------------------
+
+    /**loginform
+     * Will show the login form with the layout
+     * @param
+     *      loginby the loginby field that will be repopulated in the form
+     *      errors  errors that will be displayed
+     *      fb_url  the fb login url
+    */
     private function loginform($loginby, $errors = '', $fb_url = '')
     {
         $data = array(
@@ -30,22 +54,18 @@ class Users extends MX_Controller
         echo Modules::run('layout/account', $data);
     }
 
+//-----------------------------------------------------------------------------
+
+    /**Login
+     *Checks for session cookie, form validation, login credentials
+     *and logs in or shows loginform accordingly
+     *
+    */
     public function login()
     {
-		var_dump($this->session->userdata());
-        var_dump($this->session->flashdata());
-		$afterlogin = base_url('login');
-		// if user is already logged in
-		if ($this->users_mdl->loggedin()) {
-			echo "User logged in so redirecting to {$afterlogin}";
-			redirect($afterlogin, 'refresh'); // code after this should not run
-			return TRUE;
-		}
+		$afterlogin = base_url('users/home'); // the next page after login successful
 	
-        //$fbloginUrl = $this->users_mdl->fb(TRUE);
-        $fbloginUrl = '';
-        
-        // $loginUrl = htmlspecialchars($loginUrl) ;
+        $fbloginUrl = $this->users_mdl->fb(TRUE); // get the login url for login with fb button
         
         if ($this->form_validation->run() == FALSE) {
             // invalid form
@@ -59,14 +79,36 @@ class Users extends MX_Controller
             } else {
                 // login successful
 				echo "Redirecting you to {$afterlogin}";
-                var_dump($this->session->userdata());
-                //redirect($afterlogin, 'refresh');
-                exit();
+                redirect($afterlogin, 'refresh'); // code after this should not run
+                exit();                           // so exit is used just in case
             }
         }
     }
 
-    //@TODO add the full name field
+//-----------------------------------------------------------------------------
+
+    /**Logout
+     *
+     * This will logout the user
+     *
+    */
+    public function logout () {
+        $this->users_mdl->logout();
+        redirect(base_url('login'), 'refresh');
+    }
+
+//-----------------------------------------------------------------------------
+
+    /**signupform
+     *
+     * @TODO add the full name field
+     *
+     * @param
+     *      username    the username that will be repopulated in the form
+     *      email       the email that will be repopulated in the form
+     *      errors      errors that will be displayed
+     *      fb_url      fb url for the signup with fb button
+    */
     private function signupform($username, $email, $errors = '', $fb_url = '')
     {
         $data = array(
@@ -81,22 +123,19 @@ class Users extends MX_Controller
         echo Modules::run('layout/account', $data);
     }
 
+//-----------------------------------------------------------------------------
+
+
+    /**Signup
+     *
+     * This checks for various things and shows
+     * signup form or sends to verification page
+    */
     public function signup()
     {
-        $fb = new Facebook\Facebook([
-            'app_id' => config_item('app_id'), // Replace {app-id} with your app id
-            'app_secret' => config_item('app_secret'),
-            'default_graph_version' => 'v2.8'
-        ]);
-        
-        $helper = $fb->getRedirectLoginHelper();
-        
-        $permissions = [
-            'email'
-        ]; // Optional permissions
-        $loginUrl = $helper->getLoginUrl(base_url('users/fb_callback'), $permissions);
-        
-        // $loginUrl = htmlspecialchars($loginUrl) ;
+        $errors = '';
+
+        $fbloginUrl = $this->users_mdl->fb(TRUE); // get the login url for login with fb button
         
         // check recaptcha
         $response = $this->input->post('g-recaptcha-response');
@@ -107,25 +146,34 @@ class Users extends MX_Controller
                 // verified!
                 echo 'verified';
             } else {
-                $errors = $resp->getErrorCodes();
+                $errors .= $resp->getErrorCodes();
             }
         }
         
         if ($this->form_validation->run() == FALSE) {
             // invalid form
-            $this->signupform($this->input->post('username', 'TRUE'), $this->input->post('email', 'TRUE'), validation_errors(), $loginUrl);
-        } else {
-            // valid form
+            $errors .= validation_errors();
+        } elseif ($errors != '') {
+            // valid form and no errors
             $check = $this->users_mdl->signup();
             if ($check != '') {
                 // username/email already registered.
-                $this->signupform($this->input->post('loginby', 'TRUE'), $check . ' already taken');
+                $errors .= $check . ' already taken';
             } else {
                 // signup successful
-                // redirect(base_url('home'), 'refresh');
                 echo 'signup success';
+                //redirect(base_url('users/next'), 'refresh');
+                exit();
+
+                // lines after this will only be executed if signup was unsuccessful
             }
         }
+
+        $this->signupform(  $this->input->post('username', TRUE),
+                            $this->input->post('email', TRUE),
+                            $errors,
+                            $loginUrl
+                );
     }
 
     function verify($id = '', $verificationText = '')
@@ -133,20 +181,6 @@ class Users extends MX_Controller
         if ($id == '' || $verificationText == '')
             echo 'no params';
         $this->users_mdl->verify($id, $verificationText);
-        /*
-         * $noRecords = $this->HomeModel->verifyEmailAddress($verificationText);
-         * if ($noRecords > 0) {
-         * $error = array(
-         * 'success' => "Email Verified Successfully!"
-         * );
-         * } else {
-         * $error = array(
-         * 'error' => "Sorry Unable to Verify Your Email!"
-         * );
-         * }
-         * $data['errormsg'] = $error;
-         * $this->load->view('index.php', $data);
-         */
     }
 
     public function fb_callback()

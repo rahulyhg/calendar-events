@@ -8,6 +8,7 @@ class Home extends Member_controller {
 	}
 
 	public function index() {
-		echo 'home controller';
+		echo "Welcome {$this->session->username}<br />";
+		echo anchor(base_url('users/logout'), 'Log out');
 	}
 }

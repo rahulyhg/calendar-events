@@ -33,6 +33,7 @@ class Verify_mdl extends Base_Model
 
     public function verify_with($verifying_key)
     {
+        $afterverify = base_url('users/home'); // @TODO create a step 2 for additional profile and change this to it
         if ($this->_verifying_row && $this->_verifying_row->verifying_key == $verifying_key) {
             // ready to verify
             
@@ -53,6 +54,8 @@ class Verify_mdl extends Base_Model
             $this->delete($this->_verifying_row->id);
             
             echo 'successfully added with id = ' . $id;
+
+            redirect($afterverify, 'refresh');
         } else {
             // key not matched
             echo 'key not matched';

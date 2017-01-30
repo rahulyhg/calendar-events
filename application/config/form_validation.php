@@ -1,14 +1,17 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
+// if username is supplied.
+$pos = strpos($this->input->post('loginby'), '@' );
+var_dump($pos);
+if ( $pos !== FALSE) {
+    $loginrule = 'valid_email';
+}
+else {
+    $loginrule = 'alpha_dash';
+}
+
 $config = array(
-    // if username is supplied.
-    if (strpos($this->input->post('loginby'), '@') === null) {
-        $loginrule = 'alpha_dash';
-    }
-    else {
-        $loginrule = 'valid_email';
-    }
     'users/login' => array(
         array(
             'field' => 'loginby',
