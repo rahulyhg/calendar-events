@@ -63,7 +63,11 @@ class Users extends MX_Controller
     */
     public function login()
     {
-		$afterlogin = base_url('users/home'); // the next page after login successful
+        $flashnext = $this->session->flashdata('nextpage');
+        $this->session->set_flashdata('nextpage', $flashnext);
+		$afterlogin = $flashnext != ''? $flashnext :'users/home'; // the next page after login successful
+        echo $afterlogin;
+        $afterlogin = base_url($afterlogin); // generate the next page with base_url()
 	
         $fbloginUrl = $this->users_mdl->fb(TRUE); // get the login url for login with fb button
         

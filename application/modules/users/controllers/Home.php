@@ -9,6 +9,7 @@ class Home extends Member_controller {
 
 	public function index() {
 		echo "Welcome {$this->session->username}<br />";
+		modules::load('calendar')->test();
 		echo anchor(base_url('users/logout'), 'Log out');
 	}
 }
