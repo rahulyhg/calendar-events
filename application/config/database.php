@@ -115,7 +115,7 @@ $db['sanjeev'] = array(
 		'failover' => array()
 );
 
-$db['000webhost'] = array(
+$db['000webhost'] = array(				// doesn't work
     'dsn' => '',
     'hostname' => '104.20.68.46',
     'username' => 'id631710_sanjeev',
@@ -137,7 +137,7 @@ $db['000webhost'] = array(
     'save_queries' => TRUE
 );
 				
-$db['sql2012'] = array(	//not working
+$db['sql2012'] = array(					//not working
 	'dsn' => '',
 	'hostname' => 'DESKTOP-795A69O',
 	'username' => 'sanjeev',

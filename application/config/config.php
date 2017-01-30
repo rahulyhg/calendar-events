@@ -1,6 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
+// for extending the custom base/member/other classes.
 function __autoload($classname)
 {
     if (strpos($classname, 'CI_') !== 0) {
@@ -33,7 +34,7 @@ function __autoload($classname)
  * | a PHP script and you can easily do that on your own.
  * |
  */
-$config['base_url'] = 'http://localhost';
+$config['base_url'] = 'http://localhost/';
 
 /*
  * |--------------------------------------------------------------------------
@@ -378,10 +379,10 @@ $config['encryption_key'] = 'nabs)%HO$U(BVOI0hsgoabdo9(*#Y';
  * |
  */
 $config['sess_driver'] = 'database';
-$config['sess_cookie_name'] = 'ci_session';
+$config['sess_cookie_name'] = 'cekosessions';
 $config['sess_expiration'] = 7200;
 $config['sess_save_path'] = 'cekosessions';
-$config['sess_match_ip'] = TRUE;
+$config['sess_match_ip'] = FALSE;
 $config['sess_time_to_update'] = 300;
 $config['sess_regenerate_destroy'] = FALSE;
 
@@ -401,7 +402,7 @@ $config['sess_regenerate_destroy'] = FALSE;
  * |
  */
 $config['cookie_prefix'] = 'ncitce';
-$config['cookie_domain'] = '.ncitce.comeze.com';
+$config['cookie_domain'] = 'localhost';
 $config['cookie_path'] = '/';
 $config['cookie_secure'] = FALSE;
 $config['cookie_httponly'] = TRUE;
