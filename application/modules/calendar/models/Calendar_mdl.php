@@ -410,14 +410,30 @@ class Calendar_mdl extends Base_Model
 //---------------------------------library functions--------------------------------------------------------------------
 // --------------------------------------------------------------------
     
-    
-    // ------------Functions not needed to be overwritten------------------
-    
-    // public function initialize($config = array()){}
-	
-	// public function adjust_date($month, $year) {}
-	
-	// public function default_template() {}
+    /**
+     * Initialize the user preferences (from CI Calendar library)
+     *
+     * Accepts an associative array as input, containing display preferences
+     *
+     * @param
+     *            array config preferences
+     * @return CI_Calendar
+     */
+    public function initialize($config = array())
+    {
+        foreach ($config as $key => $val) {
+            if (isset($this->$key)) {
+                $this->$key = $val;
+            }
+        }
+        
+        // Set the next_prev_url to the controller if required but not defined
+        if ($this->show_next_prev === TRUE && empty($this->next_prev_url)) {
+            $this->next_prev_url = $this->CI->config->site_url($this->CI->router->class . '/' . $this->CI->router->method);
+        }
+        
+        return $this;
+    }
     
     // --------------------------------------------------------------------
     
