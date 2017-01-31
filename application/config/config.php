@@ -34,7 +34,7 @@ function __autoload($classname)
  * | a PHP script and you can easily do that on your own.
  * |
  */
-$config['base_url'] = 'http://localhost/';
+$config['base_url'] = 'http://ncitce.dev';
 
 /*
  * |--------------------------------------------------------------------------
@@ -401,8 +401,8 @@ $config['sess_regenerate_destroy'] = FALSE;
  * | 'cookie_httponly') will also affect sessions.
  * |
  */
-$config['cookie_prefix'] = 'ncitce';
-$config['cookie_domain'] = 'localhost';
+$config['cookie_prefix'] = '';
+$config['cookie_domain'] = '';
 $config['cookie_path'] = '/';
 $config['cookie_secure'] = FALSE;
 $config['cookie_httponly'] = TRUE;

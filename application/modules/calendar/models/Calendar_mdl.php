@@ -616,7 +616,7 @@ class Calendar_mdl extends Base_Model
             );
         }
         
-        return ($this->lang->line($month_names[$month]) === FALSE) ? ucfirst(substr($month_names[$month], 4)) : $this->lang->line($month_names[$month]);
+        return ($this->lang->line($month_names[$month]) === FALSE) ? ucfirst(substr($month_names[$month], 4)) : ucfirst($this->lang->line($month_names[$month]));
     }
     
     // --------------------------------------------------------------------
