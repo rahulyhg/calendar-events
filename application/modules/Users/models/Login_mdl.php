@@ -59,9 +59,9 @@ class Login_mdl extends Base_Model
             // set session and then redirect
 			
             $sesdata = array(
-				'id' => $userdata->id,
-				'username' => $userdata->username,
-				'email' => $userdata->email,
+				'id' => $userdata['id'],
+				'username' => $userdata['username'],
+				'email' => $userdata['email'],
                 'loginby' => 'email',
 				'loggedin' => TRUE
 			);
@@ -84,15 +84,13 @@ class Login_mdl extends Base_Model
         // var_dump ($login_data);
         $userdata = $this->get($login_data);
 
-        echo 'id : '.$userdata->username;
-
         if (count($userdata)) {
             // correct username password combination
             // set session and then redirect
 
             $sesdata = array(
-                'id' => $userdata->id,
-                'username' => $userdata->username,
+                'id' => $userdata['id'],
+                'username' => $userdata['username'],
                 'email' => '',
                 'loginby' => 'username',
                 'loggedin' => TRUE

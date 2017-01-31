@@ -4,10 +4,9 @@ defined('BASEPATH') or exit('No direct script access allowed');
 define('CONVSTD', '1943-04-14');	// conversion standard
 									// 2000-01-01 B.S. = 1944-03-13 A.D.
 
-// the global variables
-$gd = 1943;
-$gm = 1;
-$gd = 1;
+// the global variables for conversion
+$idate = array(0,0,0);  // input date
+$odate = array(0,0,0);  // output date
 $total_days = 0;
 
 /**
@@ -106,73 +105,74 @@ class Calendar_mdl extends Base_Model
      * @return string the english date format
      */
 	function np_convert_to_greg($date = '') {
-		global $total_days, $gy, $gm, $gd;
+		global $idate, $odate, $total_days;
 
 		if ($date == '') {
 			$date = $this->_cur_date;
 		}
 
-		// index of $date_array:
+		// index of $idate:
 		// [0] year
 		// [1] month
 		// [2] day
 
-		$date_array = explode('-', $date);
-		var_dump($date_array);
+		$idate = $date;
 
 		// add the days passed before given year
-		for ($i = 2000; $i < $date_array[0]; $i++) {
+		for ($i = 2000; $i < $idate[0]; $i++) {
 			$total_days += $this->get_days_in_year($i, 'year');
 		}
 
 		// add the days passed before given month in the given year
-		for ($i = 1; $i < $date_array[1]; $i++) {
-			$total_days += $this->get_days_in_month($date_array[0], $i);
+		for ($i = 1; $i < $idate[1]; $i++) {
+			$total_days += $this->get_days_in_month($idate[0], $i);
 		}
 
 		// add the given days
-		$total_days += $date_array[2];
+		$total_days += $idate[2];
 
 		// add the days passed in 1943 to reset greg date to 1943-00-00 or 1943-12-31
 		$total_days += 102;
-		
+
+        //-----------------------------------------now calculate the greg date-----------------------------------------		
 
 		// add total passed years
-		for ($gy = 1943, $dy = ($this->is_leap_year($gy) ? 366 : 365) ; $total_days >= $dy; $gy++) { // 365 -60
-			$dy = ($this->is_leap_year($gy) ? 366 : 365);
+		for ($odate[0] = 1943, $dy = ($this->is_leap_year($odate[0]) ? 366 : 365) ; $total_days >= $dy; $odate[0]++) { // 365 -60
+			$dy = ($this->is_leap_year($odate[0]) ? 366 : 365);
 			$total_days -= $dy;
 		}
 
 		if ($total_days == 0) {
 			// if the days were exactly the no. of days in the year
-			$gy--;
-			$gm = 12;
-			$gd = 31;
-			return "{$gy}-{$gm}-{$gd}";
+			$odate[0]--;
+			$odate[1] = 12;
+			$odate[2] = 31;
+			return implode('-', $odate);
 		}
 
 		// set the array of days of the month in the year
-		$days_of_month = array(31, ($this->is_leap_year($gy)? 29: 28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
+		$days_of_month = array(31, ($this->is_leap_year($odate[0])? 29: 28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
 
 		// add total passed month in the year
-		for ($gm = 0; $total_days >= $days_of_month[$gm]; $gm++) {
-			$total_days -= $days_of_month[$gm];
+		for ($odate[1] = 0; $total_days >= $days_of_month[$odate[1]]; $odate[1]++) {
+			$total_days -= $days_of_month[$odate[1]];
 		}
 
 		if ($total_days == 0) {
 			// if the days were exactly the no. of days in the month
-			$gm;
-			$gd = 31;
-			return "{$gy}-{$gm}-{$gd}";
+			$odate[1];
+			$odate[2] = 31;
+			return implode('-', $odate);
 		}
 
 		// add total passed days passed in the month of the year
-		$gd += $total_days;
+        $odate[2] = 0;
+		$odate[2] += $total_days;
 
-		$gm++;
-		$gd++;
+		$odate[1]++;
+		$odate[2]++;
 
-		return "{$gy}-{$gm}-{$gd}";
+		return implode('-', $odate);
 	}
 
 	/**
@@ -183,7 +183,50 @@ class Calendar_mdl extends Base_Model
      * @return string the nepali date
      */
 	function np_convert_from_greg($date) {
-		
+		global $idate, $odate, $total_days;
+
+        if ($date == '') {
+            $date = $this->_cur_date;
+        }
+
+        $idate = $date;
+
+        // add days from total passed years
+        for ($i = 1943, $dy = ($this->is_leap_year($i) ? 366 : 365); $i < $idate[0]; $i++) {
+            $dy = ($this->is_leap_year($i) ? 366 : 365);
+            $total_days += $dy;
+        }
+
+        // set the array of days of the month in the year
+        $days_of_month = array(31, ($this->is_leap_year($idate[0])? 29: 28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
+
+        // add days from passed month in the year
+        for ($i = 0; $i < $idate[1]-1; $i++) {
+            $total_days += $days_of_month[$i];
+        }
+
+        // add total passed days passed in the month of the year
+        $total_days += $idate[2];
+
+        // add the days passed in 1943 to reset greg date to 1943-00-00 or 1943-12-31
+        $total_days += 102;
+
+        //-----------------------------------------now calculate the np date-----------------------------------------
+
+        // calculate the year
+        for ($odate[0] = 2000; $total_days > $this->get_days_in_year($odate[0], 'year'); $odate[0]++) {
+            $total_days -= $this->get_days_in_year($i, 'year');
+        }
+
+        // calculate the month
+        for ($odate[1] = 1; $total_days > $this->get_days_in_month($odate[0], $odate[1]); $odate[1]++) {
+            $total_days -= $this->get_days_in_month($idate[0], $i);
+        }
+
+        // add the given days
+        $odate[2] = $total_days;
+
+        return implode('-', $odate);
 	}
 
 	/**
