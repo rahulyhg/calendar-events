@@ -18,11 +18,14 @@ class Calendar extends Member_Controller
     }
 	
 	public function test() {
-		//echo $this->np_cal->np_get_month_name('01');
+		// echo $this->np_cal->np_get_month_name('01');
 
-        //echo $this->calendar_mdl->get_days_in_year(2073, 'year');
-        //echo $this->calendar_mdl->get_days_in_month(10);
-        echo $this->calendar_mdl->np_convert_from_greg(array(1995,2,5));
-        echo $this->calendar_mdl->np_convert_to_greg(array(2051,8,6));
+        // echo $this->calendar_mdl->get_days_in_year(2073, 'year');
+        // echo $this->calendar_mdl->get_days_in_month(10);
+        echo $this->calendar_mdl->np_generate('2073',1);
+        // echo $this->calendar_mdl->np_convert_from_greg(array(1995,2,5));
+        // echo $this->calendar_mdl->np_convert_to_greg(array(2051,8,6));
+        // echo $this->calendar_mdl->np_convert_to_greg('2051-10-22');
+        // echo $this->calendar_mdl->np_convert_from_greg('1994-11-22');
 	}
 }

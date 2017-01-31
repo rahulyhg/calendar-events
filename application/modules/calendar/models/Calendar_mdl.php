@@ -50,7 +50,7 @@ class Calendar_mdl extends Base_Model
     public function __construct()
     {
         parent::__construct();
-        $this->_cur_date = '2073-10-10 12:12:12'; // only for testing
+        $this->_cur_date = $this->np_convert_from_greg();
         $this->lang = new CI_Lang();
         $this->lang->load('cal', $this->language);
     }
@@ -74,7 +74,7 @@ class Calendar_mdl extends Base_Model
     {
     	if ($param2 === '') {
     		// year not given. set month and get the current year.
-    		$month = substr($param2, 0, 1) == '0' ? substr($param2, 1) : $param2;
+    		$month = (int) $param1;
     		$cur_year = $this->np_date('YYYY');
     		$days_in_year = $this->get_days_in_year($cur_year);
     		return $days_in_year[$param1];
@@ -82,7 +82,7 @@ class Calendar_mdl extends Base_Model
     	else {
     		//year given.
     		$year = $param1;
-    		$month = substr($param2, 0, 1) == '0' ? substr($param2, 1) : $param2;
+    		$month = (int) $param2;
     		$days_in_year = $this->get_days_in_year($year);
     		return $days_in_year[$month];
     	}
@@ -110,20 +110,27 @@ class Calendar_mdl extends Base_Model
 	 * Converts nepali date B.S. to gregorian date A.D.
      *
      * @param
-     *            string the nepali date format (YYYY-MM-DD)
+     *            mixed the nepali date format (YYYY-MM-DD)
      * @return string the english date format
      */
 	function np_convert_to_greg($date = '') {
 		global $idate, $odate, $total_days;
 
+        // @TODO check the $date variable for its value and range
+
 		if ($date == '') {
-			$date = $this->_cur_date;
+            // if empty get current nepali date
+			$date = array_map('intval', explode('-', $this->_cur_date));
 		}
 
-		
+		if (!is_array($date)) {
+            // if string, convert it to int array
+            $date = array_map('intval', explode('-', $date));
+        }
 
-		$idate = $date;
-        $total_days = 0;
+		$idate = $date;     // set idate
+        $total_days = 0;    // reset total_days
+
 		// add the days passed before given year
 		for ($i = 2000; $i < $idate[0]; $i++) {
 			$total_days += $this->get_days_in_year($i, 'year');
@@ -184,14 +191,22 @@ class Calendar_mdl extends Base_Model
 	 * Converts nepali date B.S. to gregorian date A.D.
      *
      * @param
-     *            string the english date
+     *            mixed the english date
      * @return string the nepali date
      */
 	function np_convert_from_greg($date = '') {
 		global $idate, $odate, $total_days;
 
+        // @TODO check date for it values and range
+
         if ($date == '') {
-            $date = $this->_cur_date;
+            // if date is empty, set date to current date
+            $date = array_map('intval', explode('-', date('Y-m-d')));
+        }
+
+        if (!is_array($date)) {
+            // if date is string, change it to int array
+            $date = array_map('intval', explode('-', $date));
         }
 
         $idate = $date;     // set date
@@ -245,14 +260,14 @@ class Calendar_mdl extends Base_Model
 	}
 
 	/**
-	 * Calculates wheather english year is leap year or not
+	 * Calculates whether english year is leap year or not
 	 *
 	 * @param integer $year
 	 * @return boolean
 	 */
 	public function is_leap_year($year)
 	{
-		return (bool) !(($year % 100) ? ($year % 4) : ($year % 400));
+		return (bool) !($year % 100) ? !($year % 400) : !($year % 4);
 	}
 
 
@@ -280,29 +295,55 @@ class Calendar_mdl extends Base_Model
         $datestr = str_replace(array('M', 'm'), substr($this->_cur_date, 5, 2), $datestr);
 
         return $datestr;
-    }
-
-
-// ------------------------------------------------------------------------
-
-
-
-    /**
-     * Number of days in a specified nepali month
-     *
-     * Takes a nepali month/year as input and returns the number of days
-     * for the given month/year using the data in cal_data database table.
-     *
-     * @param
-     *            int a numeric month
-     * @param
-     *            int a numeric year
-     * @return int
-     */
-    public function np_days_in_month($month = 0, $year = '')
-    {
-        // @TODO write the whole function
-        return $days_in_month;
+        /*
+            @TODO add support for these below (http://php.net/manual/en/function.date.php)
+            format character    Description Example returned values
+            Day --- ---
+            d   Day of the month, 2 digits with leading zeros   01 to 31
+            D   A textual representation of a day, three letters    Mon through Sun
+            j   Day of the month without leading zeros  1 to 31
+            l (lowercase 'L')   A full textual representation of the day of the week    Sunday through Saturday
+            N   ISO-8601 numeric representation of the day of the week (added in PHP 5.1.0) 1 (for Monday) through 7 (for Sunday)
+            S   English ordinal suffix for the day of the month, 2 characters   st, nd, rd or th. Works well with j
+            w   Numeric representation of the day of the week   0 (for Sunday) through 6 (for Saturday)
+            z   The day of the year (starting from 0)   0 through 365
+            Week    --- ---
+            W   ISO-8601 week number of year, weeks starting on Monday  Example: 42 (the 42nd week in the year)
+            Month   --- ---
+            F   A full textual representation of a month, such as January or March  January through December
+            m   Numeric representation of a month, with leading zeros   01 through 12
+            M   A short textual representation of a month, three letters    Jan through Dec
+            n   Numeric representation of a month, without leading zeros    1 through 12
+            t   Number of days in the given month   28 through 31
+            Year    --- ---
+            L   Whether it's a leap year    1 if it is a leap year, 0 otherwise.
+            o   ISO-8601 week-numbering year. This has the same value as Y, except that if the ISO week number (W) belongs to the previous or next year, that year is used instead. (added in PHP 5.1.0)    Examples: 1999 or 2003
+            Y   A full numeric representation of a year, 4 digits   Examples: 1999 or 2003
+            y   A two digit representation of a year    Examples: 99 or 03
+            Time    --- ---
+            a   Lowercase Ante meridiem and Post meridiem   am or pm
+            A   Uppercase Ante meridiem and Post meridiem   AM or PM
+            B   Swatch Internet time    000 through 999
+            g   12-hour format of an hour without leading zeros 1 through 12
+            G   24-hour format of an hour without leading zeros 0 through 23
+            h   12-hour format of an hour with leading zeros    01 through 12
+            H   24-hour format of an hour with leading zeros    00 through 23
+            i   Minutes with leading zeros  00 to 59
+            s   Seconds, with leading zeros 00 through 59
+            u   Microseconds (added in PHP 5.2.2). Note that date() will always generate 000000 since it takes an integer parameter, whereas DateTime::format() does support microseconds if DateTime was created with microseconds.    Example: 654321
+            v   Milliseconds (added in PHP 7.0.0). Same note applies as for u.  Example: 654
+            Timezone    --- ---
+            e   Timezone identifier (added in PHP 5.1.0)    Examples: UTC, GMT, Atlantic/Azores
+            I (capital i)   Whether or not the date is in daylight saving time  1 if Daylight Saving Time, 0 otherwise.
+            O   Difference to Greenwich time (GMT) in hours Example: +0200
+            P   Difference to Greenwich time (GMT) with colon between hours and minutes (added in PHP 5.1.3)    Example: +02:00
+            T   Timezone abbreviation   Examples: EST, MDT ...
+            Z   Timezone offset in seconds. The offset for timezones west of UTC is always negative, and for those east of UTC is always positive.  -43200 through 50400
+            Full Date/Time  --- ---
+            c   ISO 8601 date (added in PHP 5)  2004-02-12T15:19:21+00:00
+            r   » RFC 2822 formatted date   Example: Thu, 21 Dec 2000 16:01:07 +0200
+            U   Seconds since the Unix Epoch (January 1 1970 00:00:00 GMT)  See also time()
+        */
     }
 
 // ------------------------------------------------------------------------
@@ -423,8 +464,10 @@ class Calendar_mdl extends Base_Model
         // Set the starting day number
         // 1. Convert the nepali month day 1 to english date
         // 2. Get the day from english date
-        $day = -5;
-        //$day = $start_day + 1 - $date['wday'];
+        $gdate = explode('-', $this->np_convert_to_greg(array($year,$month,1)));
+        $local_date = mktime(12, 0, 0, $gdate[1], $gdate[2], $gdate[0]);
+        $date = getdate($local_date);
+        $day = $start_day + 1 - $date['wday'];
         
         // Set the current month/year/day
         // We use this to determine the "today" date
