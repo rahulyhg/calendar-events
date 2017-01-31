@@ -2,12 +2,21 @@
 defined('BASEPATH') or exit('No direct script access allowed');
 
 define('CONVSTD', '1943-04-14');	// conversion standard
-									// 2000-01-01 B.S. = 1944-03-13 A.D.
+									// 2000-01-01 B.S. = 1943-04-14 A.D.
+                                    // But for easiness 31+28+31+14 - 1 = 103 will be added
+                                    // to make it 1943-01-01
 
-// the global variables for conversion
+/**
+ the global variables for conversion
+
+ index of date arrays:
+ [0] year
+ [1] month
+ [2] day
+*/
 $idate = array(0,0,0);  // input date
 $odate = array(0,0,0);  // output date
-$total_days = 0;
+$total_days = 0;        // total num of days after CONVSTD
 
 /**
  * Cal_data_model contains model, library and helper for nepali date
@@ -111,17 +120,15 @@ class Calendar_mdl extends Base_Model
 			$date = $this->_cur_date;
 		}
 
-		// index of $idate:
-		// [0] year
-		// [1] month
-		// [2] day
+		
 
 		$idate = $date;
-
+        $total_days = 0;
 		// add the days passed before given year
 		for ($i = 2000; $i < $idate[0]; $i++) {
 			$total_days += $this->get_days_in_year($i, 'year');
 		}
+
 
 		// add the days passed before given month in the given year
 		for ($i = 1; $i < $idate[1]; $i++) {
@@ -132,18 +139,18 @@ class Calendar_mdl extends Base_Model
 		$total_days += $idate[2];
 
 		// add the days passed in 1943 to reset greg date to 1943-00-00 or 1943-12-31
-		$total_days += 102;
+		$total_days += 103;
 
         //-----------------------------------------now calculate the greg date-----------------------------------------		
 
 		// add total passed years
-		for ($odate[0] = 1943, $dy = ($this->is_leap_year($odate[0]) ? 366 : 365) ; $total_days >= $dy; $odate[0]++) { // 365 -60
-			$dy = ($this->is_leap_year($odate[0]) ? 366 : 365);
-			$total_days -= $dy;
+		for ($odate[0] = 1943; $total_days >= ($this->is_leap_year($odate[0]) ? 366 : 365); $odate[0]++) {
+			$total_days -= ($this->is_leap_year($odate[0]) ? 366 : 365);
 		}
 
 		if ($total_days == 0) {
 			// if the days were exactly the no. of days in the year
+            // set it to dec 31 of prev year
 			$odate[0]--;
 			$odate[1] = 12;
 			$odate[2] = 31;
@@ -151,26 +158,24 @@ class Calendar_mdl extends Base_Model
 		}
 
 		// set the array of days of the month in the year
-		$days_of_month = array(31, ($this->is_leap_year($odate[0])? 29: 28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
+		$days_of_month = array(0, 31, ($this->is_leap_year($odate[0])? 29: 28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
 
 		// add total passed month in the year
-		for ($odate[1] = 0; $total_days >= $days_of_month[$odate[1]]; $odate[1]++) {
+		for ($odate[1] = 1; $total_days >= $days_of_month[$odate[1]]; $odate[1]++) {
 			$total_days -= $days_of_month[$odate[1]];
 		}
 
 		if ($total_days == 0) {
 			// if the days were exactly the no. of days in the month
-			$odate[1];
-			$odate[2] = 31;
+            // set it to last day of prev month
+            $odate[1]--;
+			$odate[2] = $days_of_month[$odate[1]];
 			return implode('-', $odate);
 		}
 
 		// add total passed days passed in the month of the year
         $odate[2] = 0;
 		$odate[2] += $total_days;
-
-		$odate[1]++;
-		$odate[2]++;
 
 		return implode('-', $odate);
 	}
@@ -182,45 +187,55 @@ class Calendar_mdl extends Base_Model
      *            string the english date
      * @return string the nepali date
      */
-	function np_convert_from_greg($date) {
+	function np_convert_from_greg($date = '') {
 		global $idate, $odate, $total_days;
 
         if ($date == '') {
             $date = $this->_cur_date;
         }
 
-        $idate = $date;
+        $idate = $date;     // set date
+        $total_days = 0;    // reset total_days
 
         // add days from total passed years
-        for ($i = 1943, $dy = ($this->is_leap_year($i) ? 366 : 365); $i < $idate[0]; $i++) {
-            $dy = ($this->is_leap_year($i) ? 366 : 365);
-            $total_days += $dy;
+        for ($i = 1943; $i < $idate[0]; $i++) {
+            $total_days += $this->is_leap_year($i) ? 366 : 365;
         }
 
         // set the array of days of the month in the year
-        $days_of_month = array(31, ($this->is_leap_year($idate[0])? 29: 28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
+        $days_of_month = array(0, 31, ($this->is_leap_year($idate[0])? 29: 28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
 
         // add days from passed month in the year
-        for ($i = 0; $i < $idate[1]-1; $i++) {
+        for ($i = 1; $i < $idate[1]; $i++) {
             $total_days += $days_of_month[$i];
         }
 
         // add total passed days passed in the month of the year
         $total_days += $idate[2];
 
-        // add the days passed in 1943 to reset greg date to 1943-00-00 or 1943-12-31
-        $total_days += 102;
+        // subtract the days passed in CONVSTD to reset greg date to 1943-01-01
+        $total_days -= 103;
 
         //-----------------------------------------now calculate the np date-----------------------------------------
 
         // calculate the year
-        for ($odate[0] = 2000; $total_days > $this->get_days_in_year($odate[0], 'year'); $odate[0]++) {
-            $total_days -= $this->get_days_in_year($i, 'year');
+        for ($odate[0] = 2000; $total_days >= $this->get_days_in_year($odate[0], 'year'); $odate[0]++) {
+            $total_days -= $this->get_days_in_year($odate[0], 'year');
+        }
+
+        if ($total_days == 0) {
+            // set it to chaitra last of prev year
+            $odate[0]--;
+            $odate[1] = 12;
+            $odate[2] = $this->get_days_in_month($odate[0], 12);
         }
 
         // calculate the month
-        for ($odate[1] = 1; $total_days > $this->get_days_in_month($odate[0], $odate[1]); $odate[1]++) {
-            $total_days -= $this->get_days_in_month($idate[0], $i);
+        for (   $odate[1] = 1, $dm = $this->get_days_in_month($odate[0], $odate[1]);    // initialization
+                $total_days >= $dm;                                                     // condition
+                $odate[1]++, $dm = $this->get_days_in_month($odate[0], $odate[1])       // increment
+        ) {
+            $total_days -= $dm;
         }
 
         // add the given days
