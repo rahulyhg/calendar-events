@@ -27,7 +27,15 @@ class Calendar extends Member_Controller
         // echo $this->calendar_mdl->np_convert_to_greg(array(2051,8,6));
         // echo $this->calendar_mdl->np_convert_to_greg('2051-10-22');
         // echo $this->calendar_mdl->np_convert_from_greg('1994-11-22');
-
-        Modules::run('layout/member',$data);
+        //echo "test called with data : {$data}";
+        $data = array(
+                'events' => array(
+                        3  => 'http://example.com/news/article/2006/06/03/',
+                        7  => 'http://example.com/news/article/2006/06/07/',
+                        13 => 'http://example.com/news/article/2006/06/13/',
+                        26 => 'http://example.com/news/article/2006/06/26/'
+                )
+        );
+        Modules::load('layout')->member($data);
 	}
 }

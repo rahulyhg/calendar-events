@@ -7,7 +7,6 @@ defined('BASEPATH') or exit('No direct script access allowed');
 <div class="container">
 	
 	<?php $this->load->view('elements/navbar'); ?>
-
 	<!-- Main -->
 	<div class="main jumbotron" style="width:95%">
 		<div class="calparts row">
@@ -19,8 +18,6 @@ defined('BASEPATH') or exit('No direct script access allowed');
 			</div>
 		</div>
 	</div>
-	<?php echo anchor(base_url('users/logout'), 'Log out');?>
-
-</div>
+</div> <!-- end container -->
 
 <?php $this->load->view('elements/footer'); ?>

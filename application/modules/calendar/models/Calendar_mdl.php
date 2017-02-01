@@ -39,7 +39,7 @@ class Calendar_mdl extends Base_Model
     public $start_day = 'sunday';
     public $month_type = 'long';
     public $day_type = 'abr';
-    public $show_next_prev = FALSE;
+    public $show_next_prev = TRUE;
     public $next_prev_url = '';
     public $show_other_days = FALSE;
     protected $lang;
@@ -429,7 +429,7 @@ class Calendar_mdl extends Base_Model
         
         // Set the next_prev_url to the controller if required but not defined
         if ($this->show_next_prev === TRUE && empty($this->next_prev_url)) {
-            $this->next_prev_url = $this->CI->config->site_url($this->CI->router->class . '/' . $this->CI->router->method);
+            $this->next_prev_url = $this->_cur_date;
         }
         
         return $this;
@@ -504,7 +504,7 @@ class Calendar_mdl extends Base_Model
             // Add a trailing slash to the URL if needed
             $this->next_prev_url = preg_replace('/(.+?)\/*$/', '\\1/', $this->next_prev_url);
             
-            $adjusted_date = $this->adjust_date($month - 1, $year);
+            $adjusted_date = $this->np_adjust_date($month - 1, $year);
             $out .= str_replace('{previous_url}', $this->next_prev_url . $adjusted_date['year'] . '/' . $adjusted_date['month'], $this->replacements['heading_previous_cell']) . "\n";
         }
         
@@ -517,7 +517,7 @@ class Calendar_mdl extends Base_Model
         
         // "next" month link
         if ($this->show_next_prev === TRUE) {
-            $adjusted_date = $this->adjust_date($month + 1, $year);
+            $adjusted_date = $this->np_adjust_date($month + 1, $year);
             $out .= str_replace('{next_url}', $this->next_prev_url . $adjusted_date['year'] . '/' . $adjusted_date['month'], $this->replacements['heading_next_cell']);
         }
         
@@ -539,6 +539,7 @@ class Calendar_mdl extends Base_Model
             
             for ($i = 0; $i < 7; $i ++) {
                 if ($day > 0 && $day <= $total_days) {
+                    // current month and day
                     $out .= ($is_current_month === TRUE && $day == $cur_day) ? $this->replacements['cal_cell_start_today'] : $this->replacements['cal_cell_start'];
                     
                     if (isset($data[$day])) {
@@ -563,8 +564,8 @@ class Calendar_mdl extends Base_Model
                     
                     if ($day <= 0) {
                         // Day of previous month
-                        $prev_month = $this->adjust_date($month - 1, $year);
-                        $prev_month_days = $this->get_total_days($prev_month['month'], $prev_month['year']);
+                        $prev_month = $this->np_adjust_date($month - 1, $year);
+                        $prev_month_days = $this->get_days_in_month($prev_month['year'], $prev_month['month']);
                         $out .= str_replace('{day}', $prev_month_days + $day, $this->replacements['cal_cell_other']);
                     } else {
                         // Day of next month
@@ -585,6 +586,47 @@ class Calendar_mdl extends Base_Model
         
         return $out .= "\n" . $this->replacements['table_close'];
     }
+
+    // --------------------------------------------------------------------
+    
+    /**
+     * Adjust Date
+     *
+     * This function makes sure that we have a valid month/year.
+     * For example, if you submit 13 as the month, the year will
+     * increment and the month will become January.
+     *
+     * @param
+     *            int the month
+     * @param
+     *            int the year
+     * @return array
+     */
+    public function np_adjust_date($month, $year)
+    {
+        $date = array();
+        
+        $date['month'] = $month;
+        $date['year'] = $year;
+        
+        while ($date['month'] > 12) {
+            $date['month'] -= 12;
+            $date['year'] ++;
+        }
+        
+        while ($date['month'] <= 0) {
+            $date['month'] += 12;
+            $date['year'] --;
+        }
+        
+        if (strlen($date['month']) === 1) {
+            $date['month'] = '0' . $date['month'];
+        }
+        
+        return $date;
+    }
+    
+    // --------------------------------------------------------------------
     
     // --------------------------------------------------------------------
     
@@ -691,23 +733,6 @@ class Calendar_mdl extends Base_Model
         }
         
         return $days;
-    }
-    
-    // --------------------------------------------------------------------
-    
-    /**
-     * Total days in a given month
-     *
-     * @param
-     *            int the month
-     * @param
-     *            int the year
-     * @return int
-     */
-    public function np_get_total_days($month, $year)
-    {
-        $this->load->helper('date'); // this helper is left to extend
-        // return np_days_in_month($month, $year); // this function is left to write
     }
 
     // --------------------------------------------------------------------

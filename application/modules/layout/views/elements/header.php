@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title><?php echo ucfirst($page); ?></title>
+<title><?php echo ucfirst($this->uri->segment(1)); ?></title>
 <meta name="viewport" content="width=device-width, initialscale=1.0">
 	<!-- Bootstrap -->
 	<?php echo link_tag('bootstrap/css/bootstrap.min.css'); ?>
@@ -18,6 +18,7 @@
 		    table, tr, td, th, .navbar-brand, .navpage {
 		    	font-size: 1em;
 		    }
+		    
 		}
 
 	    @media screen and (max-width: 250px) {
@@ -42,9 +43,13 @@
 			border-collapse: collapse;
 		}
 		.square {
-		    padding-bottom: 8%; /* = width for a 1:1 aspect ratio */
+		    padding-bottom: 10%; /* = width for a 1:1 aspect ratio */
 		    margin:0;
 		    overflow:hidden;
+		}
+		.square .glyphicon {
+			top: auto;
+			font-size: 0.3em;
 		}
 	</style>
 </head>
