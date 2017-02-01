@@ -14,7 +14,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 				<?php $this->load->view("calendar/calendar_tbl", $caldata=''); ?>
 			</div>
 			<div class="ebar col-sm-4">
-				<?php $this->load->view("calendar/events_bar"); ?>
+				<?php $this->load->view("events/events_bar"); ?>
 			</div>
 		</div>
 	</div>

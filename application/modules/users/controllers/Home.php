@@ -3,11 +3,82 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class Home extends Member_controller {
 	protected $_page_uri = 'users/home';
+	protected $data = array();
 	public function __construct() {
 		parent::__construct($this->_page_uri);
 	}
 
 	public function index() {
-		modules::load('calendar')->test();
+		$this->calendar();
+	}
+
+	/**
+	 * It sets the year and month,
+	 * creates an event module instance passes the userid to events module and
+	 * passes the reference to the event object
+	 * and passes the data to Calendar::gen
+	 *
+	*/
+
+	public function calendar($param1 = '', $param2 = '') {
+		/*
+         * If no param is supplied, show cur month of cur year
+         * If only one param is supplied show month of cur year
+         * If both param supplied, param1 is year and param2 is month
+        */
+        $param1 = (int) $param1;
+        $param2 = (int) $param2;
+
+        $year = 0;
+
+		if (!$param1) {
+            // if $param is null, set date ko null. 
+            $this->data['date'] = null;
+        }
+        elseif (!$param2) {
+        	// param1 is not null
+         	// param2 is null
+         	// month = param1
+
+         	if ($param1>=1 && $param1<=12) {
+         		// checking range of date 1-12
+         		$this->data['date'] = array(
+	            	'month' => $param1,
+	            	'year' => null
+	            );
+         	}
+         	else {
+         		$this->data['date'] = null;
+         	}
+        }
+        else {
+        	// param1 is not null
+        	// param2 is not null
+        	// year = param1 and month = param2
+
+        	// check range of year (later)
+
+        	if ($param2>=1 && $param2<=12) {
+         		// checking range of date 1-12
+         		$this->data['date'] = array(
+	            	'month' => $param2,
+	            	'year' => $param1
+	            );
+         	}
+
+        }
+
+        $this->load->module('events', 1); // pass userid
+
+        $this->data['eobj'] = $this->events;
+
+        $this->data['events'] = array(
+                3  => 'http://example.com/news/article/2006/06/03/',
+                7  => 'http://example.com/news/article/2006/06/07/',
+                13 => 'http://example.com/news/article/2006/06/13/',
+                26 => 'http://example.com/news/article/2006/06/26/'
+        );
+
+		modules::load('calendar')->gen($this->data); // calendar :: gen takes two params
 	}
 }
