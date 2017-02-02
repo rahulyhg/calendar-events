@@ -27,6 +27,30 @@ class Calendar extends Member_Controller
      * processes the events and sets preferences and data for calendar_mdl :: generate
     */
 	public function gen($data) {
+        
+        $this->calendar_mdl->initialize($this->getprefs()); // initialize the preferences
+
+        $this->event = $data['eobj']; // get the reference to event instance
+
+        // get events
+        // $this->event->index();
+
+        Modules::load('layout')->member($data);
+	}
+
+    public function test() {
+        // echo $this->np_cal->np_get_month_name('01');
+        // echo $this->calendar_mdl->get_days_in_year(2073, 'year');
+        // echo $this->calendar_mdl->get_days_in_month(10);
+        // echo $this->calendar_mdl->np_generate('2080',1);
+        // echo $this->calendar_mdl->np_convert_from_greg(array(1995,2,5));
+        // echo $this->calendar_mdl->np_convert_to_greg(array(2051,8,6));
+        // echo $this->calendar_mdl->np_convert_to_greg('2051-10-22');
+        // echo $this->calendar_mdl->np_convert_from_greg('1994-11-22');
+        //echo "test called with data : {$data}";
+    }
+
+    public function getprefs() {
         $prefs['show_other_days'] = TRUE;
         $prefs['show_next_prev']  = TRUE;
         $prefs['next_prev_url']   = base_url('users/home');
@@ -73,25 +97,7 @@ class Calendar extends Member_Controller
                 'cal_row_end' => '</tr>',
                 'table_close' => '</table>'
         );
-        $this->calendar_mdl->initialize($prefs); // initialize the preferences
 
-        $this->event = $data['eobj']; // get the reference to event instance
-
-        // get events
-        //$this->event->index();
-
-        Modules::load('layout')->member($data);
-	}
-
-    public function test() {
-        // echo $this->np_cal->np_get_month_name('01');
-        // echo $this->calendar_mdl->get_days_in_year(2073, 'year');
-        // echo $this->calendar_mdl->get_days_in_month(10);
-        // echo $this->calendar_mdl->np_generate('2080',1);
-        // echo $this->calendar_mdl->np_convert_from_greg(array(1995,2,5));
-        // echo $this->calendar_mdl->np_convert_to_greg(array(2051,8,6));
-        // echo $this->calendar_mdl->np_convert_to_greg('2051-10-22');
-        // echo $this->calendar_mdl->np_convert_from_greg('1994-11-22');
-        //echo "test called with data : {$data}";
+        return $prefs;
     }
 }

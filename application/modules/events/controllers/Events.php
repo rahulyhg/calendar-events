@@ -10,10 +10,19 @@ class Events extends Member_Controller
     {
         parent::__construct();
         $this->_userid = $userid;
+        $this->load->model('event_mdl');
     }
 
     public function index()
     {
         echo "hello";
     }
+
+    public function ofmonth($year, $month) {
+    	;
+    }
+
+    public function ofyear() {}
+
+    public function ofday() {}
 }

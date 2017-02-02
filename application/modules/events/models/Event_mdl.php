@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class User_model extends Base_Model
+class Event_mdl extends Base_Model
 {
 	protected $_userid;
 
@@ -11,12 +11,6 @@ class User_model extends Base_Model
         $this->load->model('calendar/calendar_mdl');
     }
 
-    public function ofmonth($month, $year='')
-    {}
-
-    public function ofday($month, $year='')
-    {}
-
-    public function ofyear($month, $year='')
+    public function getevents($month, $year='')
     {}
 }
