@@ -4,7 +4,7 @@ defined('USERKOTYPE') or exit('No direct script access allowed'); // can only be
 ?>
 
 <!-- the panel -->
-<div class="panel panel-primary">
+<div class="panel panel-primary hidden-xs">
 	<div class="panel-heading">
     <h3 class="panel-title">Events this month</h3>
   </div>
@@ -16,19 +16,16 @@ defined('USERKOTYPE') or exit('No direct script access allowed'); // can only be
 			<!-- the event thumbnail -->
 			<div class="media thumbnail">
 				<div class="media-left media-top">
-					<a href="<?php echo $event;?>" style="width: 64px; height: 64px;">
-						<div class="text-center bg-danger" style="width: 64px; height: 32px; line-height:32px;">
-							<?php echo $date['month']; ?>/
-						</div>
-						<div class="text-center text-danger bg-danger" style="width: 64px; height: 32px; line-height:32px;">
-							<?php echo $day; ?>
+					<a href="<?php echo $event;?>">
+						<div>
+							<small><i><?php echo $day > 9 ? $day : "0{$day}"; ?></i></small>
 						</div>
 					</a>
 				</div>
 
 				<!-- event details -->
 				<div class="media-body">
-					<h4 class="media-heading"><?php echo $eventdata[$day]['title']; ?></h4>
+					<h4 class="media-heading"><?php echo ucfirst($eventdata[$day]['title']); ?></h4>
 					<?php echo $eventdata[$day]['description'] ?><br />
 					<a data-toggle="collapse" data-target="#comments<?php echo $day; ?>" >Comments</a>
 
@@ -51,21 +48,19 @@ defined('USERKOTYPE') or exit('No direct script access allowed'); // can only be
 		<?php endforeach; ?>
 
 		<!-- add event thumbnail -->
+		<a href="<?php echo $event;?>">
 			<div class="media thumbnail">
-				<div class="media-left media-top">
-					<a href="<?php echo $event;?>" style="width: 64px; height: 64px;">
-						<div class="text-center bg-danger" style="width: 64px; height: 64px; line-height:64px;">
-							<span class="glyphicon glyphicon-plus" style="width: 64px; height: 64px; line-height:64px;"></span>
-						</div>
-					</a>
+				<div class="media-left media-top">	
+					<div>
+						<span class="glyphicon glyphicon-plus"></span>
+					</div>
 				</div>
 
 				<!-- add event link -->
 				<div class="media-body">
-					<a href="<?php echo $event;?>" style="width: 64px; height: 64px;">
-						<h4 class="media-heading" style="line-height:64px;">Add new event</h4>
-					</a>
+					<h4 class="media-heading">Add new event</h4>
 				</div>
 			</div> <!-- end add event thumbnail -->
+		<a>
   </div> <!-- end panel body -->
 </div> <!-- end panel -->
