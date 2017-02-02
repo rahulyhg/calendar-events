@@ -57,5 +57,30 @@ $config = array(
                 'matches' => 'The passwords do not match.'
             )
         )
+    ),
+    'events/create' => array(
+        array(
+            'field' => 'name',
+            'label' => 'Name',
+            'rules' => 'required|alpha_dash|max_length[128]'
+        ),
+        array(
+            'field' => 'description',
+            'label' => 'Description',
+            'rules' => 'alpha_dash'
+        ),
+        array(
+            'field' => 'password',
+            'label' => 'Password',
+            'rules' => 'required|min_length[6]|max_length[128]'
+        ),
+        array(
+            'field' => 'passwordconf',
+            'label' => 'Confirm Password',
+            'rules' => 'required|matches[password]',
+            'errors' => array(
+                'matches' => 'The passwords do not match.'
+            )
+        )
     )
 );
