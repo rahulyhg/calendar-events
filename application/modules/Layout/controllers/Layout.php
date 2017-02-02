@@ -21,6 +21,13 @@ class Layout extends MX_Controller
     public function member($data) {
         // data will contain
         // page = the page loaded
+        if (isset($data['calendar'])) {
+        }
+
+        $this->load->module('calendar', $data['calendar']);
+        $data['caltable'] = $this->calendar->gen();
+        $data['eventbar'] = $this->calendar->geteventbar();
+
         $this->load->view('_member',$data);
     }
 }

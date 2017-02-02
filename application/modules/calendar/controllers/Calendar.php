@@ -8,13 +8,16 @@ class Calendar extends Member_Controller
     protected $year = '';
     protected $month = '';
     protected $day = '';
-    protected $event = null;
 
-    function __construct()
+    protected $initdata = array();
+
+    function __construct($data)
     {
         parent::__construct($this->_page_uri);
 		$this->load->library('np_cal');
         $this->load->model('calendar_mdl');
+        $this->initdata = $data;
+        $this->initdata['events']->setbydate($date);
     }
 
     public function index()
@@ -26,17 +29,20 @@ class Calendar extends Member_Controller
      * gets ref to event instance from parameter and then get the user's events
      * processes the events and sets preferences and data for calendar_mdl :: generate
     */
-	public function gen($data) {
-        
-        $this->calendar_mdl->initialize($this->getprefs()); // initialize the preferences
+	public function gen() {
+        // data to be passed to the view
+        $data['prefs'] = $this->getprefs(); // get the preferences
+        $data['events'] = $this->initdata['eventlist'];
 
-        $this->event = $data['eobj']; // get the reference to event instance
-
-        // get events
-        // $this->event->index();
-
-        Modules::load('layout')->member($data);
+        // feed the data to view and return it
+        return $this->load->view('calendar_tbl', $data, TRUE);
 	}
+
+    public function geteventbar() {
+        return $this->initdata['events']->eventbar();
+    }
+
+    
 
     public function test() {
         // echo $this->np_cal->np_get_month_name('01');

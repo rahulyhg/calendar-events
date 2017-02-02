@@ -11,10 +11,10 @@ defined('BASEPATH') or exit('No direct script access allowed');
 	<div class="main jumbotron" style="width:95%">
 		<div class="calparts row">
 			<div class="caltbl col-sm-8">
-				<?php $this->load->view("calendar/calendar_tbl", $caldata=''); ?>
+				<?php echo $caltable; ?>
 			</div>
 			<div class="ebar col-sm-4">
-				<?php $this->load->view("events/events_bar"); ?>
+				<?php echo $eventbar; ?>
 			</div>
 		</div>
 	</div>

@@ -33,7 +33,7 @@ class Home extends Member_controller {
 
 		if (!$param1) {
             // if $param is null, set date ko null. 
-            $this->data['date'] = null;
+            $this->data['calendar']['date'] = null;
         }
         elseif (!$param2) {
         	// param1 is not null
@@ -42,13 +42,13 @@ class Home extends Member_controller {
 
          	if ($param1>=1 && $param1<=12) {
          		// checking range of date 1-12
-         		$this->data['date'] = array(
+         		$this->data['calendar']['date'] = array(
 	            	'month' => $param1,
 	            	'year' => null
 	            );
          	}
          	else {
-         		$this->data['date'] = null;
+         		$this->data['calendar']['date'] = null;
          	}
         }
         else {
@@ -60,7 +60,7 @@ class Home extends Member_controller {
 
         	if ($param2>=1 && $param2<=12) {
          		// checking range of date 1-12
-         		$this->data['date'] = array(
+         		$this->data['calendar']['date'] = array(
 	            	'month' => $param2,
 	            	'year' => $param1
 	            );
@@ -70,15 +70,19 @@ class Home extends Member_controller {
 
         $this->load->module('events', 1); // pass userid
 
-        $this->data['eobj'] = $this->events;
+        $this->data['calendar']['events'] = $this->events; // need date so events will be handled from calendar controller
 
-        $this->data['events'] = array(
-                3  => 'http://example.com/news/article/2006/06/03/',
-                7  => 'http://example.com/news/article/2006/06/07/',
-                13 => 'http://example.com/news/article/2006/06/13/',
-                26 => 'http://example.com/news/article/2006/06/26/'
-        );
+		modules::load('layout')->member($this->data);
+	}
 
-		modules::load('calendar')->gen($this->data); // calendar :: gen takes two params
+	public function events($eventid) {
+		$eventid = (int) $eventid;
+
+		if (!$eventid) {
+			// if event id is not valid or empty
+			exit("invalid event selected");
+		}
+
+		modules::load('events')->showevent($eventid);
 	}
 }
