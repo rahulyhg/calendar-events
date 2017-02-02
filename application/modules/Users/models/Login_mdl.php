@@ -51,8 +51,7 @@ class Login_mdl extends Base_Model
             'email' => $this->_loginby,
             'hashpass' => $this->_hashpass
         );
-        var_dump($login_data);
-        $userdata = $this->get($login_data);
+        $userdata = $this->get_by($login_data, 'row_array');
 
         if (count($userdata)) {
             // correct email password combination
@@ -82,7 +81,7 @@ class Login_mdl extends Base_Model
             'hashpass' => $this->_hashpass
         );
         // var_dump ($login_data);
-        $userdata = $this->get($login_data);
+        $userdata = $this->get_by($login_data, 'row_array');
 
         if (count($userdata)) {
             // correct username password combination

@@ -28,9 +28,9 @@ class Base_model extends CI_Model {
         return $this->db->get($this->_table_name)->$method();
     }
     
-    public function get_by($where, $single = FALSE){
+    public function get_by($where, $method = 'result'){
         $this->db->where($where);
-        return $this->get(NULL, $single);
+        return $this->get(NULL, $method);
     }
     
     public function save($data, $id = NULL){

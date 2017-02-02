@@ -5,9 +5,6 @@ defined('USERKOTYPE') or exit('No direct script access allowed'); // can only be
 class Calendar extends Member_Controller
 {
     protected $_page_uri = 'calendar';
-    protected $year = '';
-    protected $month = '';
-    protected $day = '';
 
     protected $initdata = array();
 
@@ -17,7 +14,14 @@ class Calendar extends Member_Controller
 		$this->load->library('np_cal');
         $this->load->model('calendar_mdl');
         $this->initdata = $data;
-        $this->initdata['events']->setbydate($date);
+        if (!$data['date']['year']) {
+            $this->initdata['date']['year'] = $this->calendar_mdl->np_date('Y');
+        }
+        if (!$data['date']['month']) {
+            $this->initdata['date']['month'] = $this->calendar_mdl->np_date('m');
+        }
+
+        $this->initdata['events']->setbydate($this->initdata['date']);
     }
 
     public function index()
@@ -32,12 +36,13 @@ class Calendar extends Member_Controller
 	public function gen() {
         // data to be passed to the view
         $data['prefs'] = $this->getprefs(); // get the preferences
-        $data['events'] = $this->initdata['eventlist'];
+        $data['events'] = $this->initdata['events']->geteventlist();
 
         // feed the data to view and return it
         return $this->load->view('calendar_tbl', $data, TRUE);
 	}
 
+    // event bar of the month
     public function geteventbar() {
         return $this->initdata['events']->eventbar();
     }

@@ -51,6 +51,9 @@
 			top: auto;
 			font-size: 0.3em;
 		}
+		.bg-red {
+			background-color: red;
+		}
 	</style>
 </head>
 

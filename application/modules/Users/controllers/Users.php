@@ -127,7 +127,7 @@ class Users extends MX_Controller
         echo Modules::run('layout/account', $data);
     }
 
-//-----------------------------------------------------------------------------
+    //-----------------------------------------------------------------------------
 
 
     /**Signup
@@ -160,13 +160,14 @@ class Users extends MX_Controller
         } elseif ($errors != '') {
             // valid form and no errors
             $check = $this->users_mdl->signup();
+            var_dump($check);
             if ($check != '') {
                 // username/email already registered.
                 $errors .= $check . ' already taken';
             } else {
                 // signup successful
                 echo 'signup success';
-                //redirect(base_url('users/next'), 'refresh');
+                //redirect(base_url('users/verify'), 'refresh');
                 exit();
 
                 // lines after this will only be executed if signup was unsuccessful
@@ -176,7 +177,7 @@ class Users extends MX_Controller
         $this->signupform(  $this->input->post('username', TRUE),
                             $this->input->post('email', TRUE),
                             $errors,
-                            $loginUrl
+                            $fbloginUrl
                 );
     }
 
