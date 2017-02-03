@@ -29,8 +29,11 @@ class Event_mdl extends Base_Model
         echo $this->input->post('type');
         switch($this->input->post('type')) {
             case 'onetime':
-                $this->insertonetime();
+                return $this->insertonetime();
+                break;
             case 'repeating':
+                return $this->insertrepeating();
+                break;
             default:
                 echo "how?";
                 exit();
@@ -61,8 +64,8 @@ class Event_mdl extends Base_Model
             'meta_value' => 1
         ));
 
-        $this->_table_name = 'events_membership';
-        $this->_primary_key = '';
+        $this->_table_name = 'event_membership';
+        $this->_primary_key = 'event_id';
         $this->_auto_increment = FALSE;
 
         $memid = $this->save(array(
@@ -71,6 +74,18 @@ class Event_mdl extends Base_Model
             'events_membership' => 1
         ));
 
-        if ($id && $metaid && $memid) return $id;
+        if ($id && $metaid && $memid) {
+            $data = array(
+                'status' => 1
+            );
+            $this->update($data, $id);
+            return $id;
+        }
+        return '';
+    }
+
+    protected function update($data, $id= null, $single=FALSE)
+    {
+        $this->db->update('events', $data, "id = {$id}");
     }
 }

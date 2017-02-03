@@ -48,7 +48,7 @@ defined('USERKOTYPE') or exit('No direct script access allowed'); // can only be
 		<?php endforeach; ?>
 
 		<!-- add event thumbnail -->
-		<a href="<?php echo $event;?>">
+		<a href="<?php echo base_url('events/create'); ?>">
 			<div class="media thumbnail">
 				<div class="media-left media-top">	
 					<div>

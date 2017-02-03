@@ -105,12 +105,18 @@ else {
                     $errors .= $check;
                 }
             }
-            $this->showform(array('errors' => $errors));
+            $this->viewpage(array('errors' => $errors));
         }
-        public function showform($pagedata = null) {
+        public function viewpage($pagedata = null) {
             $data['uri'] = 'events/create';
             $data['pagedata'] = $pagedata;
             echo modules::run('layout/alone', $data);
+        }
+        public function view($id = null) {
+            $id = (int) $id;
+            if (!$id) {
+                $this->viewpage('layout/alone', $data);
+            }
         }
     }
 }
