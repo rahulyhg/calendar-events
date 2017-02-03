@@ -81,14 +81,36 @@ else {
         protected $_eventlist;
         protected $_eventdata;
 
-        function index() {
+        public function __construct() {
+            parent::__construct();
+            $this->load->library('form_validation');
+            $this->load->model('event_mdl');
+        }
+
+        public function index() {
             echo 'jadu';
         }
-        function create() {
-            echo modules::run('layout/alone', 'events/create');
-        }
-        function newone() {
+        public function create() {
             $errors = '';
+            if ($this->form_validation->run() == FALSE) {
+            // invalid form
+                $errors .= validation_errors();
+            } else {
+            // valid form
+                if ($check = $this->event_mdl->create_event()) {
+                    echo 'event created';
+                    exit();
+                }
+                else {
+                    $errors .= $check;
+                }
+            }
+            $this->showform(array('errors' => $errors));
+        }
+        public function showform($pagedata = null) {
+            $data['uri'] = 'events/create';
+            $data['pagedata'] = $pagedata;
+            echo modules::run('layout/alone', $data);
         }
     }
 }

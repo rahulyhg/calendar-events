@@ -60,9 +60,12 @@ $config = array(
     ),
     'events/create' => array(
         array(
-            'field' => 'name',
-            'label' => 'Name',
-            'rules' => 'required|alpha_dash|max_length[128]'
+            'field' => 'title',
+            'label' => 'Title',
+            'rules' => 'required|alpha_dash|max_length[128]',
+            'errors' => array(
+                'alpha_dash' => 'invalid name'
+            )
         ),
         array(
             'field' => 'description',
@@ -70,17 +73,10 @@ $config = array(
             'rules' => 'alpha_dash'
         ),
         array(
-            'field' => 'password',
-            'label' => 'Password',
-            'rules' => 'required|min_length[6]|max_length[128]'
-        ),
-        array(
-            'field' => 'passwordconf',
-            'label' => 'Confirm Password',
-            'rules' => 'required|matches[password]',
-            'errors' => array(
-                'matches' => 'The passwords do not match.'
-            )
+            'field' => 'date',
+            'label' => 'Date',
+            'rules' => 'regex_match[/\d\d\d\d-\d\d-\d\d/]',
+            'errors' => 'A valid date is required.'
         )
     )
 );

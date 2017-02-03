@@ -4,6 +4,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 class Home extends Member_controller {
 	protected $_page_uri = 'users/home';
 	protected $data = array();
+	
 	public function __construct() {
 		parent::__construct($this->_page_uri);
 	}
@@ -68,7 +69,7 @@ class Home extends Member_controller {
 
         }
 
-        $this->load->module('events', 1); // pass userid
+        $this->load->module('events', $this->session->userdata('id')); // pass userid
 
         $this->data['calendar']['events'] = $this->events; // need date so events will be handled from calendar controller
 

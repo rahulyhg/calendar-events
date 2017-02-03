@@ -31,10 +31,10 @@ class Layout extends MX_Controller
         $this->load->view('_member',$data);
     }
 
-    public function alone ($page, $pagedata = null) {
+    public function alone ($page) {
         $data = array(
-            'page' => $page,
-            'pagedata' => $pagedata
+            'page' => $page['uri'],
+            'pagedata' => $page['pagedata']
         );
         $this->load->view('_alone', $data);
     }

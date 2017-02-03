@@ -66,7 +66,6 @@ class Users extends MX_Controller
         $flashnext = $this->session->flashdata('nextpage');
         $this->session->set_flashdata('nextpage', $flashnext);
 		$afterlogin = $flashnext != ''? $flashnext :'users/home'; // the next page after login successful
-        echo $afterlogin;
         $afterlogin = base_url($afterlogin); // generate the next page with base_url()
 	
         $fbloginUrl = $this->users_mdl->fb(TRUE); // get the login url for login with fb button
@@ -160,7 +159,6 @@ class Users extends MX_Controller
         } elseif ($errors != '') {
             // valid form and no errors
             $check = $this->users_mdl->signup();
-            var_dump($check);
             if ($check != '') {
                 // username/email already registered.
                 $errors .= $check . ' already taken';

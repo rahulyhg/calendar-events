@@ -14,7 +14,6 @@ class Member_Controller extends MX_Controller
 
         if ($this->session->loggedin == FALSE) {
         	$this->session->set_flashdata('nextpage', $this->_page_uri);
-            var_dump($this->session->flashdata());
         	redirect(base_url('login'), 'refresh');
         }
     }
