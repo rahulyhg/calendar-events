@@ -14,44 +14,46 @@
 			    </button>
 			</div>
 
-			<div id="navbar" class="navbar-collapse collapse">
-			    <ul class="nav navbar-nav">
-			    	<!-- Home -->
-					<li class="active navpage"><a href="#">Home</a></li>
+			<?php if (defined('USERKOTYPE')): ?>
+				<div id="navbar" class="navbar-collapse collapse">
+				    <ul class="nav navbar-nav">
+				    	<!-- Home -->
+						<li class="active navpage"><?php echo anchor(base_url('users/home'),'Home');?></li>
 
-					<!-- Calendar -->
-					<li class="dropdown navpage">
-						<a class="dropdown-toggle" data-toggle="dropdown" href="#">Calendar <span class="caret"></span></a>
-						<!-- Calendar DROPDOWN Menu -->
-						<ul class="dropdown-menu navpage">
-							<li><a href="#">Events</a></li>
-							<li><a href="#">Select</a></li>
-							<li><a href="#">Others</a></li>
-						</ul>
-					</li>
+						<!-- Calendar -->
+						<li class="dropdown navpage">
+							<a class="dropdown-toggle" data-toggle="dropdown" href="#">Calendar <span class="caret"></span></a>
+							<!-- Calendar DROPDOWN Menu -->
+							<ul class="dropdown-menu navpage">
+								<li><a href="#">Events</a></li>
+								<li><a href="#">Select</a></li>
+								<li><a href="#">Others</a></li>
+							</ul>
+						</li>
 
-					<li class="dropdown navpage">
-						<a class="dropdown-toggle" data-toggle="dropdown" href="#">
-							<span class="glyphicon glyphicon-user"></span>
-							<?php echo ucfirst($this->session->username); ?>
-							<span class="caret"></span>
-						</a>
-						<!-- User DROPDOWN Menu -->
-						<ul class="dropdown-menu navpage">
-							<li><a href="#">Profile</a></li>
-							<li><?php echo anchor(base_url('users/logout'), 'Log out');?></li>
-						</ul>
-					</li>
-			    </ul>
+						<li class="dropdown navpage">
+							<a class="dropdown-toggle" data-toggle="dropdown" href="#">
+								<span class="glyphicon glyphicon-user"></span>
+								<?php echo ucfirst($this->session->username); ?>
+								<span class="caret"></span>
+							</a>
+							<!-- User DROPDOWN Menu -->
+							<ul class="dropdown-menu navpage">
+								<li><a href="#">Profile</a></li>
+								<li><?php echo anchor(base_url('users/logout'), 'Log out');?></li>
+							</ul>
+						</li>
+				    </ul>
 
-			    <!-- Navbar Right (Unused for now) -->
-			    <!--
-			    <ul class="nav navbar-nav navbar-right">
-			      <li class="active"><a href="./">Default <span class="sr-only">(current)</span></a></li>
-			      <li><a href="../navbar-static-top/">Static top</a></li>
-			      <li><a href="../navbar-fixed-top/">Fixed top</a></li>
-			    </ul>
-			    -->
-			</div><!--/.nav-collapse -->
+				    <!-- Navbar Right (Unused for now) -->
+				    <!--
+				    <ul class="nav navbar-nav navbar-right">
+				      <li class="active"><a href="./">Default <span class="sr-only">(current)</span></a></li>
+				      <li><a href="../navbar-static-top/">Static top</a></li>
+				      <li><a href="../navbar-fixed-top/">Fixed top</a></li>
+				    </ul>
+				    -->
+				</div><!--/.nav-collapse -->
+			<?php endif; ?>
 		</div><!--/.container-fluid -->
 	</nav>

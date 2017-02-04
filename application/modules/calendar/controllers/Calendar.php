@@ -129,12 +129,12 @@ class Calendar extends Member_Controller
                 // <tr> start for cells
                 'cal_row_start' => '<tr>',
                 'cal_cell_start' => '<td class="col-xs-0 square text-right">',
-                'cal_cell_start_today' => '<td class="col-xs-0 square text-right bg-success text-success" title="Today">',
+                'cal_cell_start_today' => '<td class="col-xs-0 square text-right text-danger bg-info" title="Today">',
                 'cal_cell_start_other' => '<td class="col-xs-0 other-month square text-right text-muted">',
 
                 // cell with contents
                 'cal_cell_content' => '{day}<a href="{content}" title="Event here"><span alt="{content}" class="glyphicon glyphicon-tasks pull-right"></span></a>',
-                'cal_cell_content_today' => '<a href="{content}" style="color:red;">{day}</a>',
+                'cal_cell_content_today' => '{day}<a href="{content}" class="text-danger" title="There are events today"><span alt="{content}" class="glyphicon glyphicon-tasks pull-right"></a>',
 
                 // cell with no contents
                 'cal_cell_no_content' => '{day}',
