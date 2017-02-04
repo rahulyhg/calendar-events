@@ -21,7 +21,7 @@ defined('USERKOTYPE') or exit('No direct script access allowed'); // can only be
   </div>
   <div class="form-group">
     <label for="Date">Date(YYYY-MM-DD):</label>
-    <input type="date" name="date"  class="form-control" id="date" />
+    <input type="date" name="date" class="form-control" id="date" />
   </div>
   <div class="form-group">
     <label data-toggle="collapse" data-target="#repeat">

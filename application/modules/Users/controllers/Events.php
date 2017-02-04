@@ -6,7 +6,13 @@ class Events extends Member_controller {
         parent::__construct();
     }
     public function view($id = null) {
-        echo $id;
+        if ($id) {
+        	// if id is given
+        }
+        else {
+        	// if no id is given
+        	
+        }
     }
     public function add() {}
 }

@@ -77,7 +77,8 @@ $config = array(
             'label' => 'Date',
             'rules' => 'regex_match[/([\d])+[-\/]([\d])+[-\/]([\d])+/]',
             'errors' => 'A valid date is required.'
-        )/*,
+        )
+        /*,
         array(
             'field' => 'type',
             'label' => 'EventType',
@@ -85,6 +86,7 @@ $config = array(
             'errors' => array(
                 'required' => 'Event type is required'
             )
-        )*/
+        )
+        */
     )
 );

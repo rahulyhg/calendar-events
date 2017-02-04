@@ -11,7 +11,7 @@ defined('USERKOTYPE') or exit('No direct script access allowed'); // can only be
 
 	<!-- panel body -->
   <div class="panel-body">
-
+  <?php if($eventlist): ?>
 		<?php foreach ($eventlist as $day => $event): ?>
 			<!-- the event thumbnail -->
 			<div class="media thumbnail">
@@ -46,6 +46,7 @@ defined('USERKOTYPE') or exit('No direct script access allowed'); // can only be
 				</div> <!-- end event details -->
 			</div> <!-- end event thumbnail -->
 		<?php endforeach; ?>
+	<?php endif; ?>
 
 		<!-- add event thumbnail -->
 		<a href="<?php echo base_url('events/create'); ?>">

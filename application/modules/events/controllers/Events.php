@@ -18,35 +18,26 @@ if (defined('USERKOTYPE')) {
 
         public function setbydate($date) {
             $this->_date = $date;
-            $this->_eventlist = array(
-                3  => 'http://example.com/news/article/2006/06/03/',
-                7  => 'http://example.com/news/article/2006/06/07/',
-                13 => 'http://example.com/news/article/2006/06/13/',
-                26 => 'http://example.com/news/article/2006/06/26/'
-            );
 
-            $this->_eventdata = array (
-                3 => array (
-                        'title' => 'event 3',
+            $events = $this->event_mdl->getevents($this->_date);
+
+            foreach ($events as $type => $events) {
+                foreach ($events as $event => $fields) {
+                    $this->_eventlist[$fields['meta_value']] = base_url("events/view/{$fields['id']}");
+                    $this->_eventdata[$fields['meta_value']] = array(
+                        'title' => $fields['name'],
                         'comments' => 'comments',
-                        'description' => 'description'
-                    ),
-                7 => array (
-                        'title' => 'event 7',
-                        'comments' => 'comments',
-                        'description' => 'description'
-                    ),
-                13 => array (
-                        'title' => 'event 13',
-                        'comments' => 'comments',
-                        'description' => 'description'
-                    ),
-                26 => array (
-                        'title' => 'event 26',
-                        'comments' => 'comments',
-                        'description' => 'description'
-                    )
-            );
+                        'description' => $fields['description']
+                    );
+                }
+            }
+
+            return array('elist' => $this->_eventlist, 'edata' => $this->_eventdata);
+        }
+
+        public function setdatedevents($eventlist, $eventdata) {
+            $this->_eventlist = $eventlist;
+            $this->_eventdata = $eventdata;
         }
 
         public function geteventlist() {
@@ -56,10 +47,6 @@ if (defined('USERKOTYPE')) {
         public function index()
         {
             echo "hello";
-        }
-
-        public function create() {
-            ;
         }
 
         public function eventbar() {
@@ -114,6 +101,8 @@ else {
         }
         public function view($id = null) {
             $id = (int) $id;
+            echo $id;
+            exit();
             if (!$id) {
                 $this->viewpage('layout/alone', $data);
             }

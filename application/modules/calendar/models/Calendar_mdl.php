@@ -128,7 +128,7 @@ class Calendar_mdl extends Base_Model
             $date = array_map('intval', explode('-', $date));
         }
 
-		$idate = $date;     // set idate
+		$idate = array_values($date);     // set idate
         $total_days = 0;    // reset total_days
 
 		// add the days passed before given year

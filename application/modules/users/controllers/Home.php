@@ -49,7 +49,10 @@ class Home extends Member_controller {
 	            );
          	}
          	else {
-         		$this->data['calendar']['date'] = null;
+         		$this->data['calendar']['date'] = array(
+	            	'month' => $param2,
+	            	'year' => $param1
+         		);
          	}
         }
         else {

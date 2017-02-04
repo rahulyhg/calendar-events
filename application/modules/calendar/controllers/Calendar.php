@@ -14,6 +14,7 @@ class Calendar extends Member_Controller
 		$this->load->library('np_cal');
         $this->load->model('calendar_mdl');
         $this->initdata = $data;
+
         if (!$data['date']['year']) {
             $this->initdata['date']['year'] = $this->calendar_mdl->np_date('Y');
         }
@@ -21,7 +22,37 @@ class Calendar extends Member_Controller
             $this->initdata['date']['month'] = $this->calendar_mdl->np_date('m');
         }
 
-        $this->initdata['events']->setbydate($this->initdata['date']);
+        $datearray = array(
+            0 => $this->initdata['date']['year'],
+            1 => $this->initdata['date']['month'],
+        );
+
+        $datearray[2] = 1;
+        $range['start'] = explode('-', $this->calendar_mdl->np_convert_to_greg($datearray));
+
+        $datearray[2] = $this->calendar_mdl->get_days_in_month($this->initdata['date']['year'], $this->initdata['date']['month']);
+        $range['end'] = explode('-', $this->calendar_mdl->np_convert_to_greg($datearray));
+
+        $data = $this->initdata['events']->setbydate($range);
+
+        if ($data['elist']) {
+            
+            // convert timestamps to day
+            foreach ($data['elist'] as $timestamp => $link) {
+                $day = (int) substr($this->calendar_mdl->np_convert_from_greg(date('Y-m-d',$timestamp)), 8);
+                $data['elist'][$day] = $link;
+                unset($data['elist'][$timestamp]);
+            }
+
+            // convert timestamps to day
+            foreach ($data['edata'] as $timestamp => $link) {
+                $day = (int) substr($this->calendar_mdl->np_convert_from_greg(date('Y-m-d',$timestamp)), 8);
+                $data['edata'][$day] = $link;
+                unset($data['edata'][$timestamp]);
+            }
+
+            $this->initdata['events']->setdatedevents($data['elist'], $data['edata'] );
+        }
     }
 
     public function index()
@@ -35,6 +66,10 @@ class Calendar extends Member_Controller
     */
 	public function gen() {
         // data to be passed to the view
+        $data['date'] = array(
+            'year' => $this->initdata['date']['year'],
+            'month' => $this->initdata['date']['month']
+        );
         $data['prefs'] = $this->getprefs(); // get the preferences
         $data['events'] = $this->initdata['events']->geteventlist();
 
@@ -61,10 +96,20 @@ class Calendar extends Member_Controller
         //echo "test called with data : {$data}";
     }
 
+    private function convert_timestamp($datestr, $timestamp) {
+        $date = $this->calendar_mdl->np_convert_from_greg(date('Y-m-d', $timestamp));
+        $datestr = str_replace(array('D', 'd'), substr($date, 8), $datestr);
+        return $datestr;
+    }
+
+    private function convert_post_date_to_greg() {
+        return $this->calendar_mdl->np_convert_to_greg($this->input->post('date'));
+    }
+
     public function getprefs() {
         $prefs['show_other_days'] = TRUE;
         $prefs['show_next_prev']  = TRUE;
-        $prefs['next_prev_url']   = base_url('users/home');
+        $prefs['next_prev_url']   = base_url('users/home/calendar');
 
         $prefs['template'] = array(
                 'table_open' => '<table class="table-bordered caltable">',
