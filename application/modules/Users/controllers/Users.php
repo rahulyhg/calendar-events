@@ -146,37 +146,36 @@ class Users extends MX_Controller
             $recaptcha = new \ReCaptcha\ReCaptcha('6LcdHxMUAAAAAHcJ8Ai6WhV-VXsWtHzenRaN-jRY');
             $resp = $recaptcha->verify($_POST['g-recaptcha-response'], $_SERVER['REMOTE_ADDR']);
             if ($resp->isSuccess()) {
-                // verified!
-                echo 'verified';
-            } else {
-                $errors .= $resp->getErrorCodes();
+                //verified!
+                if ($this->form_validation->run() == FALSE) {
+                    // invalid form
+                    $errors .= validation_errors();
+                } elseif ($errors == '') {
+                    // valid form and no errors
+                    $check = $this->users_mdl->signup();
+                    if ($check != '') {
+                        // username/email already registered.
+                        $errors .= $check . ' already taken <br />';
+                    } else {
+                        // signup successful
+                        echo 'signup success';
+                        //redirect(base_url('users/verify'), 'refresh');
+                        exit();
+                        // lines after this will only be executed if signup was unsuccessful
+                    }
+                }
+           }
+            else {
+                $errors .= "Recaptcha test Failed!<br />";
             }
-        }
-        
-        if ($this->form_validation->run() == FALSE) {
-            // invalid form
-            $errors .= validation_errors();
-        } elseif ($errors != '') {
-            // valid form and no errors
-            $check = $this->users_mdl->signup();
-            if ($check != '') {
-                // username/email already registered.
-                $errors .= $check . ' already taken';
-            } else {
-                // signup successful
-                echo 'signup success';
-                //redirect(base_url('users/verify'), 'refresh');
-                exit();
-
-                // lines after this will only be executed if signup was unsuccessful
-            }
+            
         }
 
-        $this->signupform(  $this->input->post('username', TRUE),
+        $this->signupform( $this->input->post('username', TRUE),
                             $this->input->post('email', TRUE),
                             $errors,
                             $fbloginUrl
-                );
+            );
     }
 
     function verify($id = '', $verificationText = '')

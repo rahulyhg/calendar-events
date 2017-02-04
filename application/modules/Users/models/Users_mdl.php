@@ -49,7 +49,6 @@ class Users_mdl extends CI_Model
     
     public function fb($get_login_url = FALSE) {
         $this->load->model('fbverify_mdl');
-        echo 'loaded fb mdl';
         if ($get_login_url) {
             return $this->fbverify_mdl->get_login_url();
         }

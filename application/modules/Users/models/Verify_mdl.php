@@ -44,6 +44,7 @@ class Verify_mdl extends Base_Model
             $id = $this->save(array(
                 'username' => $this->_verifying_row['username'],
                 'hashpass' => $this->_verifying_row['hashpass'],
+                'name' => $this->_verifying_row['name'],
                 'email' => $this->_verifying_row['email'],
                 'register_date' => $this->_verifying_row['register_date'],
                 'is_active' => TRUE

@@ -21,17 +21,17 @@ defined('USERKOTYPE') or exit('No direct script access allowed'); // can only be
   </div>
   <div class="form-group">
     <label for="Date">Date(YYYY-MM-DD):</label>
-    <input type="date" name="date" class="form-control" id="date" />
+    <input type="text" name="date" class="form-control" id="date" value="<?php echo $this->input->get('date');?>" />
   </div>
   <div class="form-group">
-    <label data-toggle="collapse" data-target="#repeat">
+    <label>
       <span class="input-group-addon">
         <input type="radio" name="type" value="onetime" checked />
         <span> One day event </span>
       </span>
     </label>
     &nbsp;
-    <label data-toggle="collapse" data-target="#repeat">
+    <label>
       <span class="input-group-addon">
           <input type="radio" name="type" value="repeating" />
           <span> Repeating event </span>
@@ -41,23 +41,35 @@ defined('USERKOTYPE') or exit('No direct script access allowed'); // can only be
     <div id="repeat" class="collapse form-group">
       <ul class="list-group">
         <li class="list-group-item">
-          <input type="radio" name="repeat"  class="input-control" />
+        <label>
+          <input type="radio" name="repeat"  class="input-control" value="daily" />
           <span> Daily </span>
+        </label>
+          
         </li>
 
         <li class="list-group-item">
-          <input type="radio" name="repeat"  class="input-control" />
+        <label>
+          <input type="radio" name="repeat"  class="input-control" value="weekly" />
           <span> Weekly </span>
+        </label>
+          
         </li>
 
         <li class="list-group-item">
-          <input type="radio" name="repeat"  class="input-control" />
+        <label>
+          <input type="radio" name="repeat"  class="input-control" value="monthly" />
           <span> Monthly </span>
+        </label>
+          
         </li>
 
         <li class="list-group-item">
-          <input type="radio" name="repeat"  class="input-control" />
+        <label>
+          <input type="radio" name="repeat"  class="input-control" value="yearly" />
           <span> Yearly </span>
+        </label>
+          
         </li>
       </ul>    </div>
     

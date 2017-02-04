@@ -7,7 +7,6 @@ class Calendar extends Member_Controller
     protected $_page_uri = 'calendar';
 
     protected $initdata = array();
-
     function __construct($data)
     {
         parent::__construct($this->_page_uri);
@@ -27,32 +26,38 @@ class Calendar extends Member_Controller
             1 => $this->initdata['date']['month'],
         );
 
-        $datearray[2] = 1;
-        $range['start'] = explode('-', $this->calendar_mdl->np_convert_to_greg($datearray));
+        if (isset($data['from']) && $data['from'] == 'event') {}
+        else {
+            $datearray[2] = 1;
+            $range['start'] = explode('-', $this->calendar_mdl->np_convert_to_greg($datearray));
 
-        $datearray[2] = $this->calendar_mdl->get_days_in_month($this->initdata['date']['year'], $this->initdata['date']['month']);
-        $range['end'] = explode('-', $this->calendar_mdl->np_convert_to_greg($datearray));
+            $datearray[2] = $this->calendar_mdl->get_days_in_month($this->initdata['date']['year'], $this->initdata['date']['month']);
+            $range['end'] = explode('-', $this->calendar_mdl->np_convert_to_greg($datearray));
 
-        $data = $this->initdata['events']->setbydate($range);
+            $data = $this->initdata['events']->setbydate($range);
 
-        if ($data['elist']) {
-            
-            // convert timestamps to day
-            foreach ($data['elist'] as $timestamp => $link) {
-                $day = (int) substr($this->calendar_mdl->np_convert_from_greg(date('Y-m-d',$timestamp)), 8);
-                $data['elist'][$day] = $link;
-                unset($data['elist'][$timestamp]);
+            if ($data['elist']) {
+                
+                // convert timestamps to day
+                foreach ($data['elist'] as $timestamp => $link) {
+                    $day = (int) substr($this->calendar_mdl->np_convert_from_greg(date('Y-m-d',$timestamp)), 8);
+                    $link = str_replace("/a{$timestamp}/", "/$day/", $link);
+                    $data['elist'][$day] = $link;
+                    unset($data['elist'][$timestamp]);
+                }
+
+                // convert timestamps to day
+                foreach ($data['edata'] as $timestamp => $link) {
+                    $day = (int) substr($this->calendar_mdl->np_convert_from_greg(date('Y-m-d',$timestamp)), 8);
+                    $data['edata'][$day] = $link;
+                    unset($data['edata'][$timestamp]);
+                }
+
+                $this->initdata['events']->setdatedevents($data['elist'], $data['edata'] );
             }
-
-            // convert timestamps to day
-            foreach ($data['edata'] as $timestamp => $link) {
-                $day = (int) substr($this->calendar_mdl->np_convert_from_greg(date('Y-m-d',$timestamp)), 8);
-                $data['edata'][$day] = $link;
-                unset($data['edata'][$timestamp]);
-            }
-
-            $this->initdata['events']->setdatedevents($data['elist'], $data['edata'] );
         }
+
+        
     }
 
     public function index()
@@ -128,7 +133,7 @@ class Calendar extends Member_Controller
 
                 // <tr> start for cells
                 'cal_row_start' => '<tr>',
-                'cal_cell_start' => '<td class="col-xs-0 square text-right">',
+                'cal_cell_start' => '<td class="col-xs-0 square text-right calendertd" month="'.$this->initdata["date"]["month"].'" year="'.$this->initdata["date"]["year"].'" >',
                 'cal_cell_start_today' => '<td class="col-xs-0 square text-right text-danger bg-info" title="Today">',
                 'cal_cell_start_other' => '<td class="col-xs-0 other-month square text-right text-muted">',
 
@@ -155,5 +160,10 @@ class Calendar extends Member_Controller
         );
 
         return $prefs;
+    }
+
+    public function convert_to_greg($date)
+    {
+        return $this->calendar_mdl->np_convert_to_greg($date);
     }
 }

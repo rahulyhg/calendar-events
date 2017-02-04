@@ -15,14 +15,16 @@ defined('BASEPATH') or exit('No direct script access allowed');
 	<label>Password: <input type="password" class="form-control"
 		name="password" /></label>
 </div>
-<div class="checkbox">
+<!-- <div class="checkbox">
 	<label><input type="checkbox" name="remember"> Remember me</label>
-</div>
+</div> -->
 <br />
 <input type="submit" class="btn btn-info" value="Log in with the password" />
-OR: <?php echo anchor(htmlspecialchars($fb_url), 'Login with facebook','class="btn btn-primary" role="button"'); ?>
-<br />
+<!-- OR: <?php echo anchor(htmlspecialchars($fb_url), 'Login with facebook','class="btn btn-primary" role="button"'); ?>
+<br /> -->
 
+OR: <?php echo anchor(base_url('signup'), 'Signup for an account', 'class="btn btn-primary" role="button"'); ?>
+<br /> 
 
 </form>
 <br />

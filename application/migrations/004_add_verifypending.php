@@ -16,6 +16,10 @@ class Migration_Add_verifypending extends CI_Migration
                 'type' => 'varchar',
                 'constraint' => '128'
             ),
+            'name' => array(
+                'type' => 'varchar',
+                'constraint' => '128'
+            ),
             'hashpass' => array(
                 'type' => 'char',
                 'constraint' => '128',

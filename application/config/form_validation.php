@@ -3,7 +3,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 // if username is supplied.
 $pos = strpos($this->input->post('loginby'), '@' );
-var_dump($pos);
+
 if ( $pos !== FALSE) {
     $loginrule = 'valid_email';
 }
@@ -78,6 +78,7 @@ $config = array(
             'rules' => 'regex_match[/([\d])+[-\/]([\d])+[-\/]([\d])+/]',
             'errors' => 'A valid date is required.'
         )
+        
         /*,
         array(
             'field' => 'type',
@@ -88,5 +89,25 @@ $config = array(
             )
         )
         */
+    ),
+    'users/home/editevent' => array(
+        array(
+            'field' => 'title',
+            'label' => 'Title',
+            'rules' => 'required|alpha_dash|max_length[128]',
+            'errors' => array(
+                'alpha_dash' => 'invalid name'
+            )
+        ),
+        array(
+            'field' => 'description',
+            'label' => 'Description',
+            'rules' => 'alpha_dash'
+        ),
+        array(
+            'field' => 'location',
+            'label' => 'Location',
+            'rules' => 'alpha_dash'
+        )
     )
 );

@@ -79,14 +79,16 @@ class Home extends Member_controller {
 		modules::load('layout')->member($this->data);
 	}
 
-	public function events($eventid) {
-		$eventid = (int) $eventid;
+    public function events($day, $id) {
+        $day = (int) $day;
+        $id = (int) $id;
+        $this->load->module('events', $this->session->userdata('id'));
+        $this->events->view($day, $id);
+    }
 
-		if (!$eventid) {
-			// if event id is not valid or empty
-			exit("invalid event selected");
-		}
-
-		modules::load('events')->showevent($eventid);
-	}
+    public function editevent($id) {
+        $id = (int) $id;
+        $this->load->module('events', $this->session->userdata('id'));
+        $this->events->edit($id);
+    }
 }

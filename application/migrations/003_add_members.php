@@ -17,6 +17,10 @@ class Migration_Add_members extends CI_Migration
                 'constraint' => '128',
                 'unique' => TRUE
             ),
+            'name' => array(
+                'type' => 'varchar',
+                'constraint' => '128'
+            ),
             'hashpass' => array(
                 'type' => 'char',
                 'constraint' => '128',
