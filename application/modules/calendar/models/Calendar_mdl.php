@@ -294,6 +294,8 @@ class Calendar_mdl extends Base_Model
         $datestr = str_replace(array('MM', 'mm'), substr($this->_cur_date, 5, 2), $datestr);
         $datestr = str_replace(array('M', 'm'), substr($this->_cur_date, 5, 2), $datestr);
 
+        $datestr = str_replace(array('D', 'd'), substr($this->_cur_date, 8, 2), $datestr);
+
         return $datestr;
         /*
             @TODO add support for these below (http://php.net/manual/en/function.date.php)
@@ -489,7 +491,7 @@ class Calendar_mdl extends Base_Model
         // We use this to determine the "today" date
         $cur_year = $this->np_date('Y');
         $cur_month = $this->np_date('m');
-        $cur_day = date('j', $local_time); // eng and nep both have same day
+        $cur_day = $this->np_date('d'); // eng and nep both have same day
         
         $is_current_month = ($cur_year == $year && $cur_month == $month);
         
