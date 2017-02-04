@@ -28,4 +28,4 @@ OR: <?php echo anchor(base_url('signup'), 'Signup for an account', 'class="btn b
 
 </form>
 <br />
-<div><a href="<?php echo base_url('forgotpassword'); ?>">Forgot Password?</a></div>
+<!-- <div><a href="<?php echo base_url('forgotpassword'); ?>">Forgot Password?</a></div> -->

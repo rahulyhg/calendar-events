@@ -13,7 +13,7 @@ defined('USERKOTYPE') or exit('No direct script access allowed'); // can only be
   <div class="panel-body">
   <?php if($eventlist): ?>
   		<?php foreach ($eventlist as $type => $events): ?>
-  			<div><?php echo ucfirst($type); ?></div>
+  			<div><?php echo ucfirst($type).' Events'; ?></div>
 			<?php foreach ($events as $s => $event): ?>
 				<?php $date = explode('-', $event['date']); ?>
 				<?php $id = $event['id'];?>

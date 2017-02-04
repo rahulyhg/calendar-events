@@ -10,10 +10,11 @@ defined('BASEPATH') or exit('No direct script access allowed');
 	<!-- Main -->
 	<div class="main jumbotron" style="width:95%">
 		<div class="calparts row">
-			<div class="caltbl col-sm-8">
+			
+			<div class="caltbl col-sm-8" title="Click on a day to add event">
 				<?php echo $caltable; ?>
 			</div>
-			<div class="ebar col-sm-4">
+			<div class="ebar col-sm-4" title="Select event to view">
 				<?php echo $eventbar; ?>
 			</div>
 		</div>

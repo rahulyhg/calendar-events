@@ -102,7 +102,7 @@ class Calendar extends Member_Controller
         $prefs['next_prev_url']   = base_url('users/home/calendar');
 
         $prefs['template'] = array(
-                'table_open' => '<table class="table-bordered caltable">',
+                'table_open' => '<table class="table-bordered caltable bg-info">',
 
                 'heading_row_start' => '<tr class="text-primary bg-primary">',
 
@@ -119,7 +119,7 @@ class Calendar extends Member_Controller
                 // <tr> start for cells
                 'cal_row_start' => '<tr>',
                 'cal_cell_start' => '<td class="col-xs-0 square text-right calendertd" month="'.$this->initdata["date"]["month"].'" year="'.$this->initdata["date"]["year"].'" >',
-                'cal_cell_start_today' => '<td class="col-xs-0 square text-right text-danger bg-info calendertd" title="Today" month="'.$this->initdata["date"]["month"].'" year="'.$this->initdata["date"]["year"].'">',
+                'cal_cell_start_today' => '<td class="col-xs-0 square text-right text-danger bg-danger calendertd" title="Today" month="'.$this->initdata["date"]["month"].'" year="'.$this->initdata["date"]["year"].'">',
                 'cal_cell_start_other' => '<td class="col-xs-0 other-month square text-right text-muted">',
 
                 // cell with contents

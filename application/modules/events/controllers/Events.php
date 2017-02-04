@@ -224,6 +224,7 @@ else {
                 $this->load->module('calendar', $data);
                 $date = $this->calendar->convert_to_greg($event_date);
                 if ($check = $this->event_mdl->create_event($date)) {
+                    $this->set->flashdata('success', 'Event created successfully');
                     redirect(base_url('users/home'));
                     exit();
                 }
