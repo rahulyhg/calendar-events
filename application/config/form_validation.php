@@ -62,7 +62,7 @@ $config = array(
         array(
             'field' => 'title',
             'label' => 'Title',
-            'rules' => 'required|alpha_dash|max_length[128]',
+            'rules' => 'required|max_length[128]',
             'errors' => array(
                 'alpha_dash' => 'invalid name'
             )
@@ -75,7 +75,7 @@ $config = array(
         array(
             'field' => 'date',
             'label' => 'Date',
-            'rules' => 'regex_match[/([\d])+[-\/]([\d])+[-\/]([\d])+/]',
+            'rules' => 'required|regex_match[/([\d])+[-\/]([\d])+[-\/]([\d])+/]',
             'errors' => 'A valid date is required.'
         )
         
@@ -94,20 +94,18 @@ $config = array(
         array(
             'field' => 'title',
             'label' => 'Title',
-            'rules' => 'required|alpha_dash|max_length[128]',
+            'rules' => 'required|max_length[128]',
             'errors' => array(
                 'alpha_dash' => 'invalid name'
             )
         ),
         array(
             'field' => 'description',
-            'label' => 'Description',
-            'rules' => 'alpha_dash'
+            'label' => 'Description'
         ),
         array(
             'field' => 'location',
-            'label' => 'Location',
-            'rules' => 'alpha_dash'
+            'label' => 'Location'
         )
     )
 );

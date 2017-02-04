@@ -8,6 +8,7 @@ if (defined('USERKOTYPE')) {
         protected $_date;
         protected $_eventlist;
         protected $_eventdata;
+        protected $_eventfull;
 
         function __construct($id)
         {
@@ -20,19 +21,28 @@ if (defined('USERKOTYPE')) {
             $this->_date = $date;
 
             $events = $this->event_mdl->getevents($this->_date);
+            $this->_eventfull = $events;
 
-            foreach ($events as $type => $events) {
-                foreach ($events as $event => $fields) {
-                    $this->_eventlist[$fields['meta_value']] = base_url("users/home/events/a{$fields['meta_value']}/{$fields['id']}");
-                    $this->_eventdata[$fields['meta_value']] = array(
-                        'title' => $fields['name'],
-                        'comments' => 'comments',
-                        'description' => $fields['description']
-                    );
+            $event_date = array_map('intval', $date['start']);
+            $data['date'] = array(
+                'year' => $event_date[0],
+                'month' => $event_date[1],
+                'day' => $event_date[2]
+            );
+            $data['from'] = 'event';
+            $this->load->module('calendar', $data);
+            
+            
+
+            foreach ($this->_eventfull as $type => $events) {
+                foreach ($events as $s => $event) {
+                    $date = $this->calendar->convert_from_greg(date('Y-m-d', $event['meta_value']));
+                    $this->_eventfull[$type][$s]['date'] = $date;
+
                 }
-            }
+            }              
 
-            return array('elist' => $this->_eventlist, 'edata' => $this->_eventdata);
+            return $this->_eventfull;
         }
 
         public function setdatedevents($eventlist, $eventdata) {
@@ -40,8 +50,8 @@ if (defined('USERKOTYPE')) {
             $this->_eventdata = $eventdata;
         }
 
-        public function geteventlist() {
-            return $this->_eventlist;
+        public function geteventfull() {
+            return $this->_eventfull;
         }
 
         public function index()
@@ -50,18 +60,44 @@ if (defined('USERKOTYPE')) {
         }
 
         public function eventbar() {
+
             $data = array(
                 'date' => $this->_date,
-                'eventlist' => $this->_eventlist,
-                'eventdata' => $this->_eventdata
+                'eventlist' => $this->_eventfull
             );
             return $this->load->view('events_bar', $data, TRUE);
         }
 
-        public function view($day, $id) {
+        public function view($date, $id) {
             $id = (int) $id;
-            $day = (int) $day;
-            if ($id && $day) {
+            $npdate= $date;
+
+            $event_date = array_map('intval', explode('-', $date));
+            $data['date'] = array(
+                'year' => $event_date[0],
+                'month' => $event_date[1],
+                'day' => $event_date[2]
+            );
+            $data['from'] = 'event';
+            $this->load->module('calendar', $data);
+            $date = $this->calendar->convert_to_greg($event_date);
+            $datearray = explode('-', $date);
+            $timestamp = mktime(0,0,0,$datearray[1], $datearray[2], $datearray[0]);
+
+            if (!$id && $date) {
+                    $data = array(
+                        'id' => 0,
+                        'page' => 'events/view',
+                        'event' => $this->event_mdl->getevent($this->_userid, $timestamp, TRUE)
+                    );
+
+                    $data['date'] = $npdate;
+                    $data['single'] = FALSE;
+                    //$data['event']
+                    $this->viewpage($data);
+                
+            }
+            elseif ($id){
                 $p = $this->event_mdl->permissions($this->_userid, $id);
 
                 if (substr($p, 0, 1) > 4) {
@@ -70,15 +106,18 @@ if (defined('USERKOTYPE')) {
                         'page' => 'events/view',
                         'event' => $this->event_mdl->getevent($this->_userid, $id)
                     );
-                    $data['event']['day'] = $day;
+
+                    $data['event']['date'] = $npdate;
+
+                    $data['date'] = $date;
+                    $data['single'] = TRUE;
+                    //$data['event']
                     $this->viewpage($data);
                 }
                 else {
                     echo 'no permissions to read';
                 }
-                
-            }
-            else {
+            } else {
                 echo 'empty or invalid id';
             }
         }
@@ -88,10 +127,9 @@ if (defined('USERKOTYPE')) {
             $eid = (int) $eid;
             if ($eid) {
                 $p = $this->event_mdl->permissions($this->_userid, $eid);
-                echo $this->input->post('name');
-                if (!$this->input->post('name'))
+
+                if (!$this->input->post('title'))
                 {
-                    echo 'show';
                     // show the edit form 
                     if (substr($p, 0, 1) > 5) {
                         $data = array(
@@ -108,18 +146,38 @@ if (defined('USERKOTYPE')) {
                 }
                 else {
                     // update the supplied values
-                    echo 'update';
-                    if ($this->form_validation->run()) {
-                        echo 'form good';
+                    if ($this->form_validation->run() == FALSE) {
+                        $this->event_mdl->update($eid);
+                        $this->session->set_flashdata('success', 'Event Edited.');
+                        redirect(base_url('users/home'), 'refresh');
                         exit();
                     }
                     else {
-                        echo 'bad_form';
+                        $data = array(
+                            'id' => $eid,
+                            'page' => 'events/edit',
+                            'old' => $this->event_mdl->getevent($this->_userid, $eid),
+                        );
+    
+                        $this->viewpage($data);
                     }
                 }
             }
             else {
                 echo 'empty or invalid id';
+            }
+        }
+
+        public function delete($id) {
+            if ($id) {
+                $this->event_mdl->setinactive($id);
+                $this->session->set_flashdata('success', 'Deleted Sucessfully');
+                redirect(base_url('users/home'), 'refresh');
+                exit();
+            }
+            else {
+                echo 'invalid id';
+                exit();
             }
         }
 
@@ -166,7 +224,7 @@ else {
                 $this->load->module('calendar', $data);
                 $date = $this->calendar->convert_to_greg($event_date);
                 if ($check = $this->event_mdl->create_event($date)) {
-                    echo 'event created';
+                    redirect(base_url('users/home'));
                     exit();
                 }
                 else {

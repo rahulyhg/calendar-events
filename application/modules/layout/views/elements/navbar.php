@@ -16,20 +16,7 @@
 
 			<?php if (defined('USERKOTYPE')): ?>
 				<div id="navbar" class="navbar-collapse collapse">
-				    <ul class="nav navbar-nav">
-				    	<!-- Home -->
-						<li class="active navpage"><?php echo anchor(base_url('users/home'),'Home');?></li>
-
-						<!-- Calendar -->
-						<li class="dropdown navpage">
-							<a class="dropdown-toggle" data-toggle="dropdown" href="#">Calendar <span class="caret"></span></a>
-							<!-- Calendar DROPDOWN Menu -->
-							<ul class="dropdown-menu navpage">
-								<li><a href="#">Events</a></li>
-								<li><a href="#">Select</a></li>
-								<li><a href="#">Others</a></li>
-							</ul>
-						</li>
+				    <ul class="nav navbar-nav pull-right">
 
 						<li class="dropdown navpage">
 							<a class="dropdown-toggle" data-toggle="dropdown" href="#">
@@ -39,7 +26,7 @@
 							</a>
 							<!-- User DROPDOWN Menu -->
 							<ul class="dropdown-menu navpage">
-								<li><a href="#">Profile</a></li>
+								<li><a href="<?php echo base_url('users/profile');?>">Profile</a></li>
 								<li><?php echo anchor(base_url('users/logout'), 'Log out');?></li>
 							</ul>
 						</li>
@@ -57,3 +44,9 @@
 			<?php endif; ?>
 		</div><!--/.container-fluid -->
 	</nav>
+
+	<?php if ($this->session->flashdata('success')): ?>
+		<p class="bg-success text-success" style="width: 95%;">
+			<?php echo $this->session->flashdata('success'); ?>
+		</p>
+	<?php endif; ?>

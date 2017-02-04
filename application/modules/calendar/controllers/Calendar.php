@@ -33,28 +33,7 @@ class Calendar extends Member_Controller
 
             $datearray[2] = $this->calendar_mdl->get_days_in_month($this->initdata['date']['year'], $this->initdata['date']['month']);
             $range['end'] = explode('-', $this->calendar_mdl->np_convert_to_greg($datearray));
-
-            $data = $this->initdata['events']->setbydate($range);
-
-            if ($data['elist']) {
-                
-                // convert timestamps to day
-                foreach ($data['elist'] as $timestamp => $link) {
-                    $day = (int) substr($this->calendar_mdl->np_convert_from_greg(date('Y-m-d',$timestamp)), 8);
-                    $link = str_replace("/a{$timestamp}/", "/$day/", $link);
-                    $data['elist'][$day] = $link;
-                    unset($data['elist'][$timestamp]);
-                }
-
-                // convert timestamps to day
-                foreach ($data['edata'] as $timestamp => $link) {
-                    $day = (int) substr($this->calendar_mdl->np_convert_from_greg(date('Y-m-d',$timestamp)), 8);
-                    $data['edata'][$day] = $link;
-                    unset($data['edata'][$timestamp]);
-                }
-
-                $this->initdata['events']->setdatedevents($data['elist'], $data['edata'] );
-            }
+            $this->initdata['events']->setbydate($range);
         }
 
         
@@ -76,7 +55,13 @@ class Calendar extends Member_Controller
             'month' => $this->initdata['date']['month']
         );
         $data['prefs'] = $this->getprefs(); // get the preferences
-        $data['events'] = $this->initdata['events']->geteventlist();
+        $data['events'] = $this->initdata['events']->geteventfull();
+
+        foreach ($data['events'] as $type => $events) {
+            foreach ($events as $s => $event) {
+                $data['events'][substr($event['date'], 8)] = base_url('users/home/events/'.$event['date']);
+            }
+        }  
 
         // feed the data to view and return it
         return $this->load->view('calendar_tbl', $data, TRUE);
@@ -134,12 +119,12 @@ class Calendar extends Member_Controller
                 // <tr> start for cells
                 'cal_row_start' => '<tr>',
                 'cal_cell_start' => '<td class="col-xs-0 square text-right calendertd" month="'.$this->initdata["date"]["month"].'" year="'.$this->initdata["date"]["year"].'" >',
-                'cal_cell_start_today' => '<td class="col-xs-0 square text-right text-danger bg-info" title="Today">',
+                'cal_cell_start_today' => '<td class="col-xs-0 square text-right text-danger bg-info calendertd" title="Today" month="'.$this->initdata["date"]["month"].'" year="'.$this->initdata["date"]["year"].'">',
                 'cal_cell_start_other' => '<td class="col-xs-0 other-month square text-right text-muted">',
 
                 // cell with contents
-                'cal_cell_content' => '{day}<a href="{content}" title="Event here"><span alt="{content}" class="glyphicon glyphicon-tasks pull-right"></span></a>',
-                'cal_cell_content_today' => '{day}<a href="{content}" class="text-danger" title="There are events today"><span alt="{content}" class="glyphicon glyphicon-tasks pull-right"></a>',
+                'cal_cell_content' => '{day}<a href="{content}" title="Event here" class="eventDate"><span alt="{content}" class="glyphicon glyphicon-tasks pull-right"></span></a>',
+                'cal_cell_content_today' => '{day}<a href="{content}" class="text-danger eventDate" title="There are events today"><span alt="{content}" class="glyphicon glyphicon-tasks pull-right"></a>',
 
                 // cell with no contents
                 'cal_cell_no_content' => '{day}',
@@ -165,5 +150,10 @@ class Calendar extends Member_Controller
     public function convert_to_greg($date)
     {
         return $this->calendar_mdl->np_convert_to_greg($date);
+    }
+
+    public function convert_from_greg($date)
+    {
+        return $this->calendar_mdl->np_convert_from_greg($date);
     }
 }

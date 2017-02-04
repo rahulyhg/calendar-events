@@ -17,6 +17,7 @@ class Event_mdl extends Base_Model
     protected $_auto_increment = TRUE;
 
     public $repeatcode = array(
+            'onetime' => 1,
             'daily' => 11,
             'weekly' => 7,
             'monthly'=> 10,
@@ -33,7 +34,7 @@ class Event_mdl extends Base_Model
         $this->load->model('calendar/calendar_mdl');
     }
 
-    public function getevent($uid, $eid)
+    public function getevent($uid, $eid, $date = FALSE)
     {
         if (!$eid || !$uid) {
             echo 'invalid id';exit();
@@ -56,31 +57,51 @@ class Event_mdl extends Base_Model
         $start = $this->_range['start'];
         $end = $this->_range['end'];
 
-        $where = array(
-            'events.status' => 1,
-            'event_membership.users_id' => $uid,
-            'events.id'=> $eid
-        );
+        if ($date == FALSE) {
+            $where = array(
+                'events.status' => 1,
+                'event_membership.users_id' => $uid,
+                'events.id'=> $eid
+            );
 
-        $query = $this->db->select($select)
-                -> join ('event_membership', "`event_membership`.`event_id` = `events`.`id` = {$uid}", 'INNER')
-                -> join ('event_meta', "`event_meta`.`event_id` = `events`.`id`", 'INNER')
-                -> where ($where)
-                -> get('events');
-        return $query->row_array();
+            $query = $this->db->select($select)
+                    -> join ('event_membership', "`event_membership`.`event_id` = `events`.`id` = {$uid}", 'INNER')
+                    -> join ('event_meta', "`event_meta`.`event_id` = `events`.`id`", 'INNER')
+                    -> where ($where)
+                    -> get('events');
+            return $query->row_array();
+        }
+        else {
+            $where = array(
+                'events.status' => 1,
+                'event_membership.users_id' => $uid,
+                'event_meta.meta_value'=> $eid
+            );
+
+            $query = $this->db->select($select)
+                    -> join ('event_membership', "`event_membership`.`event_id` = `events`.`id` = {$uid}", 'INNER')
+                    -> join ('event_meta', "`event_meta`.`event_id` = `events`.`id`", 'INNER')
+                    -> where ($where)
+                    -> get('events');
+
+            return $query->result_array();
+        }
+        
+
+        
     }
 
     public function getevents($range)
     {
         $this->_range = $range;
-        $events['onetime'] = $this->get('weekly');
+        $events['onetime'] = $this->getbytype('onetime');
         // return the events in an array;
-        $events['daily'] = $this->get('daily');
+        $events['daily'] = $this->getbytype('daily');
         return $events;
     }
 
 
-    public function get($type) {
+    public function getbytype($type) {
         $tables = array(
             'events' => array('id', 'name', 'description', 'loc', 'creation_time', 'last_modified'),
             'event_meta' => array('meta_value')
@@ -102,16 +123,26 @@ class Event_mdl extends Base_Model
         $where = array(
             'events.status' => 1,
             'event_membership.users_id' => (int)$this->session->userdata('id'),
-            'event_meta.meta_key' => $this->repeatcode[$type],
-            'event_meta.meta_value >' => mktime(0,0,0,$start[1], $start[2], $start[0]),
-            'event_meta.meta_value <' => mktime(23,59,59,$end[1], $end[2], $end[0])
+            'event_meta.meta_key' => $this->repeatcode[$type]
         );
+
+        if ($type == 'onetime') {
+            
+
+            $where['event_meta.meta_value >'] = mktime(0,0,0,$start[1], $start[2], $start[0]);
+            $where['event_meta.meta_value <'] = mktime(23,59,59,$end[1], $end[2], $end[0]);
+        }
+        else {
+            $where['event_meta.meta_value <'] = mktime(23,59,59,$end[1], $end[2], $end[0]);
+        }
+        
 
         $query = $this->db->select($select)
                 -> join ('event_membership', "`event_membership`.`event_id` = `events`.`id`", 'INNER')
                 -> join ('event_meta', "`event_meta`.`event_id` = `events`.`id`", 'INNER')
                 -> where ($where)
                 -> get('events');
+
         return $query->result_array();
     }
 
@@ -158,7 +189,7 @@ class Event_mdl extends Base_Model
 
         $metaid = $this->save(array(
             'event_id' => $id,
-            'meta_key' => $this->repeatcode[$this->input->post('repeat')],
+            'meta_key' => $this->input->post('type') == 'repeat' ? $this->repeatcode[$this->input->post('repeat')] : 1,
             'meta_value' => mktime(0, 0, 0, $event_date[1], $event_date[2], $event_date[0])
         ));
 
@@ -182,8 +213,20 @@ class Event_mdl extends Base_Model
         return '';
     }
 
-    protected function update($data, $id= null, $single=FALSE)
+    public function update( $id)
     {
+        $data = array(
+            'name' => $this->input->post('title'),
+            'description' => $this->input->post('description'),
+            'loc' => $this->input->post('location')
+        );
+        $this->db->update('events', $data, "id = {$id}");
+    }
+
+    public function setinactive ($id) {
+        $data = array(
+            'status' => 0
+        );
         $this->db->update('events', $data, "id = {$id}");
     }
 

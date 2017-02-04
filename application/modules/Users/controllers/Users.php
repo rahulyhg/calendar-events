@@ -23,7 +23,6 @@ class Users extends MX_Controller
 
         // if the method is not logout and user is already logged in
         if ($this->uri->segment(2) != 'logout' && $this->users_mdl->loggedin()) {
-            echo "User logged in so redirecting to {$page}";
             redirect($page, 'refresh'); // code after this should not run
             exit();                     // so exit is used just in case
         }

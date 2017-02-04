@@ -46,6 +46,7 @@ class Signup_mdl extends Base_Model
         }
 
         // config the required params.
+        $this->_table_name = 'verifypending';
         $cur_datetime = date('Y-m-d H:i:s');
         $ver_key = hashit($this->input->post('username') . $this->input->post('password') . $cur_datetime);
         $id = $this->save(array(

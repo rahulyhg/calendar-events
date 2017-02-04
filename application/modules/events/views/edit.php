@@ -10,10 +10,10 @@ defined('USERKOTYPE') or exit('No direct script access allowed'); // can only be
 <?php endif;?>
 
 
-<form clas='form' role='form' action="<?php echo base_url ('users/home/editevent/'.$id); ?>">
+<form class='form' role='form' action="<?php echo base_url ('users/home/editevent/'.$id); ?>" method="post">
   <div class="form-group">
     <label for="title" >Name or Title for the event:</label>
-    <input type="text" name="title" id="title" class="form-control" maxlength="128" value="<?php echo $old['name']; ?>" />
+    <input type="text" name="title" id="title" class="form-control" maxlength="128" autocomplete="off" value="<?php echo $old['name']; ?>" />
   </div>
 
   <div class="form-group">
@@ -23,10 +23,16 @@ defined('USERKOTYPE') or exit('No direct script access allowed'); // can only be
 
   <div class="form-group">
   	<label for="location">Location: </label>
-    <input type="text" name="location" id="location" class="form-control" maxlength="128" value="<?php echo $old['loc']; ?>" />
+    <input type="text" name="location" id="location" class="form-control" maxlength="128" autocomplete="off" value="<?php echo $old['loc']; ?>" />
   </div>
   
   <div class="form-group">
-    <input type="submit" class="btn btn-info" value="Create" />
+    <input type="submit" class="btn btn-info" value="Update" />
   </div>
 </form>
+
+<a href="<?php echo base_url('users/home/delete/').$id;?>">
+  <div class="btn btn-danger">
+      Delete
+  </div>
+</a>

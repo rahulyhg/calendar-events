@@ -79,16 +79,21 @@ class Home extends Member_controller {
 		modules::load('layout')->member($this->data);
 	}
 
-    public function events($day, $id) {
-        $day = (int) $day;
+    public function events($date, $id=null) {
         $id = (int) $id;
         $this->load->module('events', $this->session->userdata('id'));
-        $this->events->view($day, $id);
+        $this->events->view($date, $id);
     }
 
     public function editevent($id) {
         $id = (int) $id;
         $this->load->module('events', $this->session->userdata('id'));
         $this->events->edit($id);
+    }
+
+    public function delete($id) {
+        $id = (int) $id;
+        $this->load->module('events', $this->session->userdata('id'));
+        $this->events->delete($id);
     }
 }

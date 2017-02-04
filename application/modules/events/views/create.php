@@ -13,15 +13,16 @@ defined('USERKOTYPE') or exit('No direct script access allowed'); // can only be
 <?php echo form_open (base_url ('events/create'), array('class' => 'form', 'role' => 'form')); ?>
   <div class="form-group">
     <label for="title">Name or Title for the event:</label>
-    <input type="text" name="title" id="title" class="form-control" maxlength="128">
+    <input type="text" name="title" id="title" class="form-control" maxlength="128" autocomplete="off">
   </div>
   <div class="form-group">
     <label for="description">Description:</label>
     <textarea class="form-control" name="description" id="description" style="resize: none;" class="col-xs-4"></textarea>
   </div>
-  <div class="form-group">
+  <div class="form-group" >
     <label for="Date">Date(YYYY-MM-DD):</label>
-    <input type="text" name="date" class="form-control" id="date" value="<?php echo $this->input->get('date');?>" />
+    <input type="text" name="sa" class="form-control" id="date" value="<?php echo $this->input->get('date');?>" disabled="disabled" />
+    <input type="hidden" name="date" class="form-control" id="date" value="<?php echo $this->input->get('date');?>" />
   </div>
   <div class="form-group">
     <label>
