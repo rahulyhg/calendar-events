@@ -213,13 +213,9 @@ class Event_mdl extends Base_Model
         return '';
     }
 
-    public function update( $id)
+    public function update($data, $id)
     {
-        $data = array(
-            'name' => $this->input->post('title'),
-            'description' => $this->input->post('description'),
-            'loc' => $this->input->post('location')
-        );
+        
         $this->db->update('events', $data, "id = {$id}");
     }
 

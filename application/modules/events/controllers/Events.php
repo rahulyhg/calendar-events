@@ -147,7 +147,12 @@ if (defined('USERKOTYPE')) {
                 else {
                     // update the supplied values
                     if ($this->form_validation->run() == FALSE) {
-                        $this->event_mdl->update($eid);
+                        $data = array(
+                            'name' => $this->input->post('title'),
+                            'description' => $this->input->post('description'),
+                            'loc' => $this->input->post('location')
+                        );
+                        $this->event_mdl->update($data, $eid);
                         $this->session->set_flashdata('success', 'Event Edited.');
                         redirect(base_url('users/home'), 'refresh');
                         exit();
@@ -224,7 +229,7 @@ else {
                 $this->load->module('calendar', $data);
                 $date = $this->calendar->convert_to_greg($event_date);
                 if ($check = $this->event_mdl->create_event($date)) {
-                    $this->set->flashdata('success', 'Event created successfully');
+                    $this->session->set_flashdata('success', 'Event created successfully');
                     redirect(base_url('users/home'));
                     exit();
                 }
